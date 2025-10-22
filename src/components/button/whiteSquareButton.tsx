@@ -1,0 +1,33 @@
+import React from "react";
+
+interface ButtonProps {
+  text: string;
+  onClick: (value: string) => void;
+  buttonRef?: React.RefObject<HTMLButtonElement | null>;
+}
+
+const Button: React.FC<ButtonProps> = ({ text, onClick, buttonRef }) => {
+  return (
+    <div className="w-full flex flex-col">
+      <button
+        ref={buttonRef}
+        onClick={() => onClick(text)}
+        className="
+        cursor-pointer
+          w-full text-md text-[#8B4DC5] py-2 px-4 rounded-md border border-[#8B4DC5]
+          shadow-md shadow-[#3C096C]/30
+          transition-all duration-700 ease-[cubic-bezier(0.45,0,0.15,1)]
+          hover: hover:scale-[1.015]
+          hover:shadow-lg hover:shadow-[#3C096C]/40
+          cursor-pointer
+          active:scale-[0.98]
+          focus:outline-none focus:ring-0
+        "
+      >
+        {text}
+      </button>
+    </div>
+  );
+};
+
+export default Button;
