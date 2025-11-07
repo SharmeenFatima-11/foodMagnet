@@ -154,7 +154,11 @@ const TextField: React.FC<TextFieldProps> = ({
                     inputRef as React.MutableRefObject<HTMLInputElement | null>
                   ).current = el;
               }}
-              value={field}
+              value={
+                field instanceof Date
+                  ? field.toISOString().split("T")[0]
+                  : field
+              }
               readOnly
               placeholder={placeholder}
               onFocus={handleFocus}
@@ -297,7 +301,9 @@ const TextField: React.FC<TextFieldProps> = ({
           <input
             type={type}
             ref={inputRef as React.RefObject<HTMLInputElement>}
-            value={field}
+            value={
+              field instanceof Date ? field.toISOString().split("T")[0] : field
+            }
             onChange={(e) => setField(e.target.value)}
             placeholder={placeholder}
             onKeyDown={onKeyDown}
