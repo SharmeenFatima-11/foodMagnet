@@ -1,23 +1,33 @@
 "use client";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import {
+  ActivateDevice,
+  GetActivateDevice,
+  DeActivateDevice,
+} from "../../../lib/api/vendor/accountApis";
+import Swal from "sweetalert2";
 import TextField from "../../textFields/textField";
 import SquareButton from "../../button/squareButton";
 
 interface VendorSidebarCardProps {
   isPublished: boolean;
+  id: number;
 }
 
 const DeviceActivationCards: React.FC<VendorSidebarCardProps> = ({
   isPublished,
+  id,
 }) => {
   const [serialNumber, setSerialNumber] = useState("");
   const [serialNumberError, setSerialNumberError] = useState("");
   const [foodMagnetIdNumber, setFoodMagnetIdNumber] = useState("");
   const [foodMagnetIdNumberError, setFoodMagnetIdNumberError] = useState("");
-  const [deviceNumber, serDeviceNumber] = useState({
-    number: "095",
-    status: "Active",
-  });
+  const [isPublishedCalled, setIsPublishedCalled] = useState(false);
+  const [isDeactivatedCalled, setIsDeactivatedCalled] = useState(false);
+  const [deviceNumber, setDeviceNumber] = useState<
+    { id: string; number: string; status: boolean }[]
+  >([]);
+
   const [formError, setFormError] = useState("");
 
   const serialNumberRef = useRef<HTMLInputElement | null>(null);
@@ -62,17 +72,80 @@ const DeviceActivationCards: React.FC<VendorSidebarCardProps> = ({
     }
     setFormError("");
 
-    const vendorData = {
-      serialNumber,
-      foodMagnetIdNumber,
-    };
+    setIsPublishedCalled(true);
+    ActivateDevice(serialNumber, foodMagnetIdNumber)
+      .then((data) => {
+        Swal.fire({
+          title: "Success!",
+          text: "Device has been activated successfully.",
+          icon: "success",
+          confirmButtonText: "OK",
+          confirmButtonColor: "#8B4DC5", // custom purple button
+        });
+        setIsPublishedCalled(false);
+        resetForm();
+      })
+      .catch((error) => {
+        const errorMessage =
+          error.message || error.error || "Failed to activate device.";
 
-    console.log("Vendor Data:", vendorData);
-    resetForm();
+        Swal.fire({
+          title: "Error!",
+          text: errorMessage,
+          icon: "error",
+          confirmButtonText: "OK",
+          confirmButtonColor: "#8B4DC5", // purple confirm button
+        });
+        setIsPublishedCalled(false);
+      });
   };
 
-  const handleDeactivate = () => {
-    console.log("Device deactivated");
+  useEffect(() => {
+    GetActivateDevice(id)
+      .then((data) => {
+        setDeviceNumber(data);
+      })
+      .catch((error) => {
+        const errorMessage =
+          error.message || error.error || "Failed to activate device.";
+
+        Swal.fire({
+          title: "Error!",
+          text: errorMessage,
+          icon: "error",
+          confirmButtonText: "OK",
+          confirmButtonColor: "#8B4DC5", // purple confirm button
+        });
+      });
+  }, []);
+
+  const handleDeactivate = (data: any) => {
+    setIsDeactivatedCalled(true);
+    DeActivateDevice({ foodTruckId: data.id })
+      .then((data) => {
+        Swal.fire({
+          title: "Success!",
+          text: "Device has been deactivated successfully.",
+          icon: "success",
+          confirmButtonText: "OK",
+          confirmButtonColor: "#8B4DC5", // custom purple button
+        });
+        setIsDeactivatedCalled(false);
+        setDeviceNumber([])
+      })
+      .catch((error) => {
+        const errorMessage =
+          error.message || error.error || "Failed to activate device.";
+
+        Swal.fire({
+          title: "Error!",
+          text: errorMessage,
+          icon: "error",
+          confirmButtonText: "OK",
+          confirmButtonColor: "#8B4DC5", // purple confirm button
+        });
+        setIsDeactivatedCalled(false);
+      });
   };
 
   return (
@@ -113,6 +186,7 @@ const DeviceActivationCards: React.FC<VendorSidebarCardProps> = ({
               text="Activate Device"
               onClick={handleSubmit}
               buttonRef={submitRef}
+              isTriggered={isPublishedCalled}
             />
           </div>
         </div>
@@ -127,22 +201,33 @@ const DeviceActivationCards: React.FC<VendorSidebarCardProps> = ({
           <div className="bg-[#DBB6FF] w-full rounded-t-lg p-2">
             <label className="text-md mb-2 ml-2 tracking-wide">ID Number</label>
           </div>
-          {isPublished && isPublished == true && (
-            <div className="flex justify-between items-center m-2 border-b border-b-[#DFE0EB]">
-              <label className="text-md mb-2 ml-2 tracking-wide">
-                {deviceNumber.number}
-              </label>
-              <label
-                className={`text-md mb-2 ml-2 tracking-wide cursor-pointer ${
-                  deviceNumber.status === "Active"
-                    ? "text-[#BC2B4D]"
-                    : "text-green-600"
-                }`}
-                onClick={handleDeactivate}
-              >
-                {deviceNumber.status == "Active" ? "Deactivate" : "Active"}
-              </label>
-            </div>
+          {isPublished && isPublished === true && deviceNumber.length > 0 && (
+            <>
+              {deviceNumber?.map((val, ind) => (
+                <div
+                  key={ind}
+                  className="flex justify-between items-center m-2 border-b border-b-[#DFE0EB]"
+                >
+                  <label className="text-md mb-2 ml-2 tracking-wide">
+                    {val.id}
+                  </label>
+                  <label
+                    className={`text-md mb-2 ml-2 tracking-wide ${
+                      isDeactivatedCalled
+                        ? "cursor-not-allowed opacity-50"
+                        : "cursor-pointer"
+                    } ${
+                      val.status === true ? "text-[#BC2B4D]" : "text-green-600"
+                    }`}
+                    onClick={() => {
+                      if (!isDeactivatedCalled) handleDeactivate(val);
+                    }}
+                  >
+                    {val.status === true ? "Deactivate" : ""}
+                  </label>
+                </div>
+              ))}
+            </>
           )}
         </div>
       </div>

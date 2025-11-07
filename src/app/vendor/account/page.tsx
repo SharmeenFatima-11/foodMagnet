@@ -7,15 +7,7 @@ import ManualUpgradeCard from "../../../components/card/account/manualUpgradeCar
 
 interface Vendor {
   id: number;
-  name: string;
-  image: string;
-  email: string;
-  phoneNumber: { code: string; number: string };
-  buissnessName: string;
-  location: string;
-  isPublished: boolean;
-  isPremium: string;
-  businessHours: { day: string; hours: string }[];
+  activeStatus: boolean;
 }
 
 const Page = () => {
@@ -29,6 +21,16 @@ const Page = () => {
     }
     setTimeout(() => setLoading(false), 500); // small delay for smooth transition
   }, []);
+
+  // ✅ Helper to update vendor state and sessionStorage
+  const updateVendor = (updatedFields: Partial<Vendor>) => {
+    setVendor((prev) => {
+      if (!prev) return prev;
+      const updatedVendor = { ...prev, ...updatedFields };
+      sessionStorage.setItem("selectedVendor", JSON.stringify(updatedVendor)); // persist to sessionStorage
+      return updatedVendor;
+    });
+  };
 
   if (loading) {
     return (
@@ -47,11 +49,18 @@ const Page = () => {
   }
 
   return (
-    <div className="h-full overflow-y-auto p-4 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100">
-      <Publishcard isPublished={vendor.isPublished} />
-      <DeviceActivationCard isPublished={vendor.isPublished} />
-      <TrackingInfoCard isPublished={vendor.isPublished} />
-      <ManualUpgradeCard />
+    <div className="h-full overflow-y-auto p-4 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100"
+    style={{
+              height: "calc(100vh - 165px)",
+            }}>
+      <Publishcard
+        isPublished={vendor.activeStatus}
+        id={vendor.id}
+        onPublishSuccess={() => updateVendor({ activeStatus: !vendor.activeStatus })} // ✅ updates both state & storage
+      />
+      <DeviceActivationCard isPublished={vendor.activeStatus} id={vendor.id} />
+      <TrackingInfoCard isPublished={vendor.activeStatus} id={vendor.id}/>
+      <ManualUpgradeCard id={vendor.id} />
     </div>
   );
 };

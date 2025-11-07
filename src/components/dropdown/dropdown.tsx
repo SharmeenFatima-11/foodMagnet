@@ -41,9 +41,7 @@ const DropDown: React.FC<DropDownProps> = ({
   };
 
   // ✅ Handle Enter key (open, close, and move to next)
-  const handleKeyDownInternal = (
-    e: React.KeyboardEvent<HTMLDivElement>
-  ) => {
+  const handleKeyDownInternal = (e: React.KeyboardEvent<HTMLDivElement>) => {
     if (e.key === "Enter") {
       e.preventDefault();
 
@@ -67,8 +65,7 @@ const DropDown: React.FC<DropDownProps> = ({
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
-    return () =>
-      document.removeEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   const filteredOptions = options.filter((option) =>
@@ -114,9 +111,7 @@ const DropDown: React.FC<DropDownProps> = ({
 
         {/* Dropdown Options */}
         {isOpen && (
-          <div
-            className="absolute z-20 w-full mt-2 bg-white rounded-xl shadow-lg border border-gray-200 max-h-56 overflow-y-auto transition-all duration-300 origin-top animate-scaleIn"
-          >
+          <div className="absolute z-20 w-full mt-2 bg-white rounded-xl shadow-lg border border-gray-200 max-h-56 overflow-y-auto transition-all duration-300 origin-top animate-scaleIn">
             <div className="p-2">
               <input
                 type="text"
@@ -152,13 +147,15 @@ const DropDown: React.FC<DropDownProps> = ({
 
       {/* Selected Chips */}
       {field.length > 0 && (
-        <div className="flex flex-wrap gap-2 mt-3">
+        <div className="flex gap-2 mt-3">
           {field.map((item, idx) => (
             <div
               key={idx}
-              className="flex items-center gap-2 bg-[#F3E8FF] text-[#3C096C] px-3 py-1.5 rounded-full shadow-sm border border-[#E0C6FF] hover:bg-[#EDE0FF] transition-all duration-200"
+              className="flex items-center gap-2 bg-[#F3E8FF] text-[#3C096C] px-3 py-1.5 rounded-full shadow-sm border border-[#E0C6FF] hover:bg-[#EDE0FF] transition-all duration-200 max-w-[150px]"
             >
-              <span className="text-sm font-medium">{item}</span>
+              <span className="text-sm font-medium truncate" title={item}>
+                {item}
+              </span>
               <button
                 type="button"
                 onClick={() => handleRemove(item)}
@@ -173,9 +170,7 @@ const DropDown: React.FC<DropDownProps> = ({
 
       {/* Error */}
       {error && (
-        <p className="text-red-500 text-sm mt-2 ml-1 animate-fadeIn">
-          {error}
-        </p>
+        <p className="text-red-500 text-sm mt-2 ml-1 animate-fadeIn">{error}</p>
       )}
     </div>
   );

@@ -1,33 +1,45 @@
 "use client";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import TextField from "../../textFields/textField";
 import DropDownWithOneOption from "../../dropdown/dropDownWithOneSelection";
 import DateField from "../../textFields/calenderField";
 import CouponTable from "../../table/couponTable";
+import WhiteSquareButton from "../../button/whiteSquareButton";
+import {
+  CreateCoupon,
+  GetVendorCoupons,
+} from "../../../lib/api/vendor/accountApis";
+import Swal from "sweetalert2";
 
-interface Coupon {
-  code: string;
-  status: string;
-  expiration: string;
+export interface Coupon {
+  promo_code: string; // or number if you prefer, but keep it consistent
+  is_used: boolean;
+  expiry_date: string | Date;
 }
 
-const ManualUpgradeCard = () => {
+interface VendorSidebarCardProps {
+  id: number;
+}
+
+const ManualUpgradeCard: React.FC<VendorSidebarCardProps> = ({ id }) => {
   const [promoCode, setPromoCode] = useState("");
   const [promoCodeError, setPromoCodeError] = useState("");
   const [couponType, setCouponType] = useState<string[]>([]);
   const [couponTypeError, setCouponTypeError] = useState("");
   const [couponTypeDropdown, setCouponTypeDropDown] = useState([
-    "Type 1",
-    "Type 2",
-    "Type 3",
+    "30 Days Trial",
+    "15 Days Trial",
+    "7 Days Trial",
   ]);
-  const [expiryDateNumber, setExpiryDateNumber] = useState("");
+  const [expiryDateNumber, setExpiryDateNumber] = useState<string | Date>("");
+
   const [expiryDateNumberError, setExpiryDateNumberError] = useState("");
   const [coupons, setCoupons] = useState<Coupon[]>([]);
 
   const promoCodeRef = useRef<HTMLInputElement | null>(null);
   const couponTypeRef = useRef<HTMLInputElement | null>(null);
   const expiryDateRef = useRef<HTMLInputElement>(null!);
+  const [isPublishedCalled, setIsPublishedCalled] = useState(false);
   const submitRef = useRef<HTMLButtonElement | null>(null);
 
   const handlePromoChange = (value: string) => {
@@ -40,11 +52,9 @@ const ManualUpgradeCard = () => {
     setCouponTypeError(value.length === 0 ? "Please select coupon type" : "");
   };
 
-  const handleExpiryDateChange = (value: string) => {
+  const handleExpiryDateChange = (value: string | Date) => {
     setExpiryDateNumber(value);
-    setExpiryDateNumberError(
-      value.length === 0 ? "Please add expiry date" : ""
-    );
+    setExpiryDateNumberError(value == "" ? "Please add expiry date" : "");
   };
 
   const resetFields = () => {
@@ -57,8 +67,6 @@ const ManualUpgradeCard = () => {
   };
 
   const handleSubmit = () => {
-    console.log("in handle submit")
-    // 🧩 Validate all fields before adding
     let valid = true;
 
     if (!promoCode.trim()) {
@@ -71,7 +79,7 @@ const ManualUpgradeCard = () => {
       valid = false;
     }
 
-    if (!expiryDateNumber.trim()) {
+    if (!expiryDateNumber) {
       setExpiryDateNumberError("Please add expiry date");
       valid = false;
     }
@@ -80,13 +88,36 @@ const ManualUpgradeCard = () => {
 
     // ✅ Add to coupons list
     const newCoupon: Coupon = {
-      code: promoCode,
-      status: "Not Used",
-      expiration: expiryDateNumber,
+      promo_code: promoCode,
+      is_used: false,
+      expiry_date: expiryDateNumber,
     };
+    setIsPublishedCalled(true);
 
-    setCoupons((prev) => [...prev, newCoupon]);
-    resetFields();
+    CreateCoupon({
+      userId: id,
+      promo_code: promoCode,
+      coupon_type: couponType[0],
+      expiry_date: expiryDateNumber,
+    })
+      .then((data) => {
+        setCoupons((prev) => [...prev, newCoupon]);
+        resetFields();
+        setIsPublishedCalled(false);
+      })
+      .catch((error) => {
+        const errorMessage =
+          error.message || error.error || "Failed to activate device.";
+
+        Swal.fire({
+          title: "Error!",
+          text: errorMessage,
+          icon: "error",
+          confirmButtonText: "OK",
+          confirmButtonColor: "#8B4DC5", // purple confirm button
+        });
+        setIsPublishedCalled(false);
+      });
   };
 
   const handleKeyDown = (
@@ -101,10 +132,30 @@ const ManualUpgradeCard = () => {
       if (nextRef && nextRef.current) {
         nextRef.current.focus();
       } else {
-        handleSubmit(); // last field triggers submit
+        // handleSubmit(); // last field triggers submit
       }
     }
   };
+
+  useEffect(() => {
+    GetVendorCoupons(id)
+      .then((data) => {
+        console.log("data", data);
+        setCoupons(data);
+      })
+      .catch((error) => {
+        const errorMessage =
+          error.message || error.error || "Failed to activate device.";
+
+        Swal.fire({
+          title: "Error!",
+          text: errorMessage,
+          icon: "error",
+          confirmButtonText: "OK",
+          confirmButtonColor: "#8B4DC5", // purple confirm button
+        });
+      });
+  }, [id]);
 
   return (
     <div className="flex flex-col gap-x-2 bg-white rounded-2xl shadow-lg p-6 my-6 transition-all gap-y-2">
@@ -148,8 +199,16 @@ const ManualUpgradeCard = () => {
           onKeyDown={(e) => handleKeyDown(e)}
         />
       </div>
+      <div className="my-3">
+        <WhiteSquareButton
+          text="Create Promo Code"
+          onClick={handleSubmit}
+          isTriggered={isPublishedCalled}
+        />
+      </div>
 
-      <CouponTable data={coupons} />
+      
+        <CouponTable data={coupons} />
     </div>
   );
 };

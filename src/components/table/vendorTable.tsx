@@ -10,8 +10,7 @@ interface Vendor {
   lastName: string;
   businessName: string;
   activeStatus: boolean;
-  city: string;
-  state: string;
+  businessAddress: string;
   subscriptionTitle: string;
   permitExpiration: string;
 }
@@ -71,19 +70,19 @@ const VendorTable: React.FC<VendorTableProps> = ({ data }) => {
     sessionStorage.setItem("selectedVendor", JSON.stringify(vendor));
   };
 
-  // ✅ Define table columns with proper field mapping
+  // ✅ Define table columns
   const columns = [
     { label: "Client Name", key: "firstName" as keyof Vendor },
     { label: "Business Name", key: "businessName" as keyof Vendor },
-    { label: "Location", key: "city" as keyof Vendor },
+    { label: "Location", key: "businessAddress" as keyof Vendor },
     { label: "Publication", key: "activeStatus" as keyof Vendor },
     { label: "Subscription", key: "subscriptionTitle" as keyof Vendor },
   ];
 
   return (
     <div className="mt-6 w-full flex justify-center">
-      <div className="inline-block w-full align-middle overflow-x-auto rounded-lg shadow-sm border border-gray-100">
-        <table className="min-w-full bg-white text-center text-sm md:text-base">
+      <div className="inline-block w-full align-middle rounded-lg shadow-sm border border-gray-100 overflow-x-auto overflow-y-auto max-h-[70vh]">
+        <table className="min-w-full bg-white text-left text-sm md:text-base">
           <thead className="sticky top-0 bg-gray-50 z-10">
             <tr className="border-b border-gray-200 text-gray-500 text-xs sm:text-sm font-medium">
               {columns.map((col) => (
@@ -92,7 +91,7 @@ const VendorTable: React.FC<VendorTableProps> = ({ data }) => {
                   className="px-3 sm:px-4 py-3 cursor-pointer select-none hover:text-gray-700 whitespace-nowrap"
                   onClick={() => handleSort(col.key)}
                 >
-                  <div className="flex justify-center items-center gap-1">
+                  <div className="flex justify-start items-center gap-1">
                     <span>{col.label}</span>
                     <ArrowUpDown
                       size={14}
@@ -112,7 +111,7 @@ const VendorTable: React.FC<VendorTableProps> = ({ data }) => {
 
           <tbody>
             <AnimatePresence>
-              {sortedData.map((item) => (
+              {sortedData?.map((item) => (
                 <motion.tr
                   key={item.id}
                   onClick={() => handleRowClick(item)}
@@ -125,9 +124,9 @@ const VendorTable: React.FC<VendorTableProps> = ({ data }) => {
                   <td className="px-4 py-3 text-[#441372] font-medium hover:underline break-words">
                     {item.firstName} {item.lastName}
                   </td>
-                  <td className="px-4 py-3 break-words">{item.businessName}</td>
+                  <td className="px-4 py-3 break-words">{item.businessName? item.businessName: "-"}</td>
                   <td className="px-4 py-3 break-words">
-                    {item.city}, {item.state}
+                    {item.businessAddress? item.businessAddress: "-"}
                   </td>
                   <td className="px-4 py-3">
                     <span
@@ -164,7 +163,7 @@ const VendorTable: React.FC<VendorTableProps> = ({ data }) => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="text-center text-gray-400 py-4 text-sm"
+            className="text-left text-gray-400 py-4 px-4 text-sm"
           >
             No data found
           </motion.p>

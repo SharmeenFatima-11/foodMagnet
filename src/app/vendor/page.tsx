@@ -51,8 +51,7 @@ const Page = () => {
       !query ||
       `${item.firstName} ${item.lastName}`.toLowerCase().includes(query) ||
       item.businessName?.toLowerCase().includes(query) ||
-      item.city?.toLowerCase().includes(query) ||
-      item.state?.toLowerCase().includes(query);
+      item.businessAddress?.toLowerCase().includes(query)
 
     // 🎟️ Subscription filter
     const matchesSubscription =

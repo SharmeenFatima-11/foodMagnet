@@ -9,6 +9,7 @@ export const Login = async (user: { email: string; password: string }) => {
       error.response?.data?.message ||
       error.response?.data?.error?.message ||
       error.message ||
+      error.error ||
       "Login failed. Please try again.";
 
     console.log("Login error:", message);

@@ -1,20 +1,24 @@
 "use client";
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import SearchField from "../../textFields/squareSearchField";
+import Swal from "sweetalert2";
 import { Copy, ChevronDown, ChevronUp } from "lucide-react";
+import { GetActivateDevice } from "../../../lib/api/vendor/accountApis";
 
 interface VendorSidebarCardProps {
   isPublished: boolean;
+  id: number;
 }
 
-const TrackingInfoCards: React.FC<VendorSidebarCardProps> = ({ isPublished }) => {
+const TrackingInfoCards: React.FC<VendorSidebarCardProps> = ({
+  isPublished,
+  id,
+}) => {
   const [search, setSearch] = useState("");
   const [expanded, setExpanded] = useState(false);
-  const [trackingData] = useState([
-    "9205 5000 0000 0000",
-    "1234 5678 9012 3456",
-    "9205 5000 1111 2222",
-  ]);
+  const [trackingData, setTrackingData] = useState<
+    { id: string; number: string; status: boolean }[]
+  >([]);
   const [trackingUpdates] = useState([
     {
       status: "Arrived at Destination",
@@ -54,11 +58,31 @@ const TrackingInfoCards: React.FC<VendorSidebarCardProps> = ({ isPublished }) =>
     },
   ]);
 
+  useEffect(() => {
+    GetActivateDevice(id)
+      .then((data) => {
+        setTrackingData(data);
+      })
+      .catch((error) => {
+        const errorMessage =
+          error.message || error.error || "Failed to activate device.";
+
+        Swal.fire({
+          title: "Error!",
+          text: errorMessage,
+          icon: "error",
+          confirmButtonText: "OK",
+          confirmButtonColor: "#8B4DC5", // purple confirm button
+        });
+      });
+  }, []);
+
+  // Filter tracking numbers based on search input
   // Filter tracking numbers based on search input
   const filteredData = useMemo(() => {
     if (!search.trim()) return trackingData;
     return trackingData.filter((val) =>
-      val.toLowerCase().includes(search.trim().toLowerCase())
+      val.number.toLowerCase().includes(search.trim().toLowerCase())
     );
   }, [search, trackingData]);
 
@@ -71,17 +95,17 @@ const TrackingInfoCards: React.FC<VendorSidebarCardProps> = ({ isPublished }) =>
         <div className="flex flex-col gap-y-3 mt-6">
           <span className="font-semibold text-gray-700">Tracking Log</span>
 
-          {isPublished==true && filteredData.length > 0 ? (
+          {isPublished == true && filteredData.length > 0 ? (
             filteredData.map((val, ind) => (
               <div
                 key={ind}
                 className="flex justify-between items-center border-b border-gray-100 text-[#8B4DC5] py-2 group"
               >
-                <span className="font-medium tracking-wide">{val}</span>
+                <span className="font-medium tracking-wide">{val.number}</span>
                 <Copy
                   size={16}
                   className="cursor-pointer text-[#8B4DC5] opacity-80 group-hover:opacity-100 transition-opacity"
-                  onClick={() => navigator.clipboard.writeText(val)}
+                  onClick={() => navigator.clipboard.writeText(val.number)}
                 />
               </div>
             ))

@@ -4,14 +4,16 @@ interface ButtonProps {
   text: string;
   onClick: (value: string) => void;
   buttonRef?: React.RefObject<HTMLButtonElement | null>;
+  isTriggered?: boolean | null
 }
 
-const Button: React.FC<ButtonProps> = ({ text, onClick, buttonRef }) => {
+const Button: React.FC<ButtonProps> = ({ text, onClick, buttonRef, isTriggered }) => {
   return (
     <div className="w-full flex flex-col">
       <button
         ref={buttonRef}
         onClick={() => onClick(text)}
+        disabled={!!isTriggered}
         className="
         cursor-pointer
           w-full bg-[#8B4DC5] text-md text-white py-2 px-4 rounded-md
@@ -24,7 +26,7 @@ const Button: React.FC<ButtonProps> = ({ text, onClick, buttonRef }) => {
           focus:outline-none focus:ring-0
         "
       >
-        {text}
+        {isTriggered ? "Processing..." : text}
       </button>
     </div>
   );

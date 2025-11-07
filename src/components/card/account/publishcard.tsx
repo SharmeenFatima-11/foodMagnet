@@ -1,28 +1,37 @@
 import React, { useState, useRef } from "react";
-import DropDown from "../../dropdown/dropDownWithOneSelection";
+import DropDown from "../../dropdown/dropdown";
 import SquareButton from "../../button/squareButton";
 import WhiteSquareButton from "../../button/whiteSquareButton";
+import Swal from "sweetalert2";
+import {
+  PublishAccount,
+  RevokeAccount,
+  DenyRequest,
+} from "../../../lib/api/vendor/accountApis";
 
 interface VendorSidebarCardProps {
   isPublished: boolean;
+  id: number;
+  onPublishSuccess: () => void;
 }
 
 const VendorSidebarCard: React.FC<VendorSidebarCardProps> = ({
   isPublished,
+  id,
+  onPublishSuccess,
 }) => {
   const [publishAccount, setPublishAccount] = useState<string[]>([]);
   const [publishAccountError, setPublishAccountError] = useState("");
+  const [isPublishedCalled, setIsPublishedCalled] = useState(false);
   const [publishOptions, setPublishOptions] = useState([
     "Picture Quality",
-    "Option 2",
+    "Menu Item Description",
+    "Typos & Grammar",
   ]);
-  const [formError, setFormError] = useState("");
 
   const handlePublishChange = (value: string[]) => {
     setPublishAccount(value);
-    if (value.length === 0)
-      setPublishAccountError("Please select at least one cuisine");
-    else setPublishAccountError("");
+    setPublishAccountError("");
   };
 
   const publishAccountRef = useRef<HTMLInputElement | null>(null);
@@ -48,29 +57,111 @@ const VendorSidebarCard: React.FC<VendorSidebarCardProps> = ({
   };
 
   const handleCancel = () => {
-    resetForm();
+    if (!publishAccount || publishAccount.length <= 0) {
+      setPublishAccountError("Select atleast one reason for rejection");
+    } else {
+      let denialReasonPicture = publishAccount.includes("Picture Quality");
+      let denialReasonMenuDescription = publishAccount.includes(
+        "Menu Item Description"
+      );
+      let denialReasonMenuTypo = publishAccount.includes("Typos & Grammar");
+      const denyBody = {
+        id,
+        denialReasonPicture,
+        denialReasonMenuDescription,
+        denialReasonMenuTypo,
+      };
+
+      setIsPublishedCalled(true);
+      DenyRequest(denyBody)
+        .then((data) => {
+          Swal.fire({
+            title: "Success!",
+            text: "Food truck profile has been rejected successfully.",
+            icon: "success",
+            confirmButtonText: "OK",
+            confirmButtonColor: "#8B4DC5", // custom purple button
+          });
+          setIsPublishedCalled(false);
+        })
+        .catch((error) => {
+          const errorMessage =
+            error.message || error.error || "Failed to deny request";
+
+          Swal.fire({
+            title: "Error!",
+            text: errorMessage,
+            icon: "error",
+            confirmButtonText: "OK",
+            confirmButtonColor: "#8B4DC5", // purple confirm button
+          });
+          setIsPublishedCalled(false);
+        });
+      resetForm();
+    }
+
+    // resetForm();
   };
 
   const handleSubmit = () => {
-    if (publishAccount.length === 0) {
-      setFormError(
-        "Please fill out all required fields correctly before submitting."
-      );
-      return;
-    }
+    setIsPublishedCalled(true);
+    PublishAccount(id)
+      .then((data) => {
+        Swal.fire({
+          title: "Success!",
+          text: "Food truck has been published successfully.",
+          icon: "success",
+          confirmButtonText: "OK",
+          confirmButtonColor: "#8B4DC5", // custom purple button
+        }).then(() => {
+          onPublishSuccess(); // 👈 update parent when confirmed
+        });
+        setIsPublishedCalled(false);
+      })
+      .catch((error) => {
+        const errorMessage =
+          error.message || error.error || "Failed to publish account";
 
-    setFormError("");
-
-    const vendorData = {
-      publishAccount,
-    };
-
-    console.log("Vendor Data:", vendorData);
+        Swal.fire({
+          title: "Error!",
+          text: errorMessage,
+          icon: "error",
+          confirmButtonText: "OK",
+          confirmButtonColor: "#8B4DC5", // purple confirm button
+        });
+        setIsPublishedCalled(false);
+      });
     resetForm();
   };
 
   const handleRevoke = () => {
-    console.log("Revoked");
+    setIsPublishedCalled(true);
+    RevokeAccount(id)
+      .then((data) => {
+        Swal.fire({
+          title: "Success!",
+          text: "Food truck has been revoked successfully.",
+          icon: "success",
+          confirmButtonText: "OK",
+          confirmButtonColor: "#8B4DC5", // custom purple button
+        }).then(() => {
+          onPublishSuccess(); // 👈 update parent when confirmed
+        });
+        setIsPublishedCalled(false);
+      })
+      .catch((error) => {
+        const errorMessage =
+          error.message || error.error || "Failed to publish account";
+
+        Swal.fire({
+          title: "Error!",
+          text: errorMessage,
+          icon: "error",
+          confirmButtonText: "OK",
+          confirmButtonColor: "#8B4DC5", // purple confirm button
+        });
+        setIsPublishedCalled(false);
+      });
   };
 
   return (
@@ -85,7 +176,11 @@ const VendorSidebarCard: React.FC<VendorSidebarCardProps> = ({
             </span>
           </div>
           <div className="">
-            <SquareButton text="Revoke" onClick={handleRevoke} />
+            <SquareButton
+              text="Revoke"
+              onClick={handleRevoke}
+              isTriggered={isPublishedCalled}
+            />
           </div>
         </div>
       ) : (
@@ -113,12 +208,17 @@ const VendorSidebarCard: React.FC<VendorSidebarCardProps> = ({
               } gap-x-3 `}
             >
               <div>
-                <WhiteSquareButton text="Cancel" onClick={handleCancel} />
+                <WhiteSquareButton
+                  text="Deny"
+                  onClick={handleCancel}
+                  isTriggered={isPublishedCalled}
+                />
               </div>
               <div className="flex-1">
                 <SquareButton
                   text="Publish Account"
                   onClick={handleSubmit}
+                  isTriggered={isPublishedCalled}
                   buttonRef={submitRef}
                 />
               </div>

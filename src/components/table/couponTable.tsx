@@ -4,11 +4,10 @@ import { ArrowUpDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export interface Coupon {
-  code: string;       // or number if you prefer, but keep it consistent
-  status: string;
-  expiration: string;
+  promo_code: string; // or number if you prefer, but keep it consistent
+  is_used: boolean;
+  expiry_date: string | Date;
 }
-
 
 interface CouponTableProps {
   data: Coupon[];
@@ -55,9 +54,9 @@ const CouponTable: React.FC<CouponTableProps> = ({ data }) => {
           <thead className="sticky top-0 bg-[#DBB6FF] z-10">
             <tr className="border-b border-[#DBB6FF] text-xs sm:text-sm font-medium">
               {[
-                { label: "Coupon Code", key: "code" },
-                { label: "Status", key: "status" },
-                { label: "Expiration Date", key: "expiration" },
+                { label: "Coupon Code", key: "promo_code" },
+                { label: "Status", key: "is_used" },
+                { label: "Expiration Date", key: "expiry_date" },
               ].map((col) => (
                 <th
                   key={col.key}
@@ -84,24 +83,35 @@ const CouponTable: React.FC<CouponTableProps> = ({ data }) => {
 
           <tbody>
             <AnimatePresence>
-              {sortedData.map((item, index) => (
-                <motion.tr
-                  key={index}
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -8 }}
-                  transition={{ duration: 0.25, ease: "easeInOut" }}
-                  className="cursor-default border-b border-gray-100 text-gray-700 hover:bg-gray-50 transition-all duration-150"
-                >
-                  <td className="px-4 py-3 break-words">
-                    {item.code}
-                  </td>
-                  <td className="px-4 py-3 break-words">
-                      {item.status}
-                  </td>
-                  <td className="px-4 py-3 break-words">{item.expiration}</td>
-                </motion.tr>
-              ))}
+              {Array.isArray(sortedData)
+                ? sortedData?.map((item, index) => (
+                    <motion.tr
+                      key={index}
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -8 }}
+                      transition={{ duration: 0.25, ease: "easeInOut" }}
+                      className="cursor-default border-b border-gray-100 text-gray-700 hover:bg-gray-50 transition-all duration-150"
+                    >
+                      <td className="px-4 py-3 break-words">
+                        {item.promo_code}
+                      </td>
+                      <td className="px-4 py-3 break-words">
+                        {item.is_used ? "Used" : "Not Used"}
+                      </td>
+                      <td className="px-4 py-3 break-words">
+                        {new Date(item.expiry_date).toLocaleDateString(
+                          "en-GB",
+                          {
+                            day: "2-digit",
+                            month: "2-digit",
+                            year: "2-digit",
+                          }
+                        )}
+                      </td>
+                    </motion.tr>
+                  ))
+                : "No coupons available."}
             </AnimatePresence>
           </tbody>
         </table>

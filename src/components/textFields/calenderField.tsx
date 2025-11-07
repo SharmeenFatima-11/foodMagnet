@@ -7,8 +7,8 @@ import { motion, AnimatePresence } from "framer-motion";
 
 interface TextFieldProps {
   text: string;
-  field: string;
-  setField: (value: string) => void;
+  field: string | Date;
+  setField: (value: string | Date) => void;
   placeholder?: string;
   type?: string;
   error?: string;
@@ -56,8 +56,8 @@ const TextField: React.FC<TextFieldProps> = ({
   // };
   const handleDateChange = (date: Date | null) => {
     if (date) {
-      const formatted = date.toISOString().split("T")[0];
-      setField(formatted);
+      // const formatted = date.toISOString().split("T")[0];
+      setField(date);
 
       // Close calendar smoothly
       setTimeout(() => setShowCalendar(false), 120);

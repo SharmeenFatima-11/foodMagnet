@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
-    "start": "next start"
+    "start": "next start",
+    "stage": "next dev -p 8000"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
@@ -18,7 +19,8 @@
     "react-datepicker": "^8.8.0",
     "react-dom": "19.1.0",
     "react-flags-select": "^2.5.0",
-    "react-phone-input-2": "^2.15.1"
+    "react-phone-input-2": "^2.15.1",
+    "sweetalert2": "^11.26.3"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
