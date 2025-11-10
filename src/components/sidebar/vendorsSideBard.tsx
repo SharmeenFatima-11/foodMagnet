@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import VendorSidebarCard from "../card/vendorSidebarCard";
-import { GetVendorDetails } from "../../lib/api/vendorApi";
+import { GetVendorDetails } from "../../lib/api/vendor/vendorApi";
 import { motion } from "framer-motion";
 
 interface Vendor {

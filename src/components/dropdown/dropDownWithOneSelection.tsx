@@ -2,10 +2,15 @@
 import React, { useState, useRef, useEffect } from "react";
 import { X, ChevronDown } from "lucide-react";
 
+interface DropDownOption {
+  id?: number | string;
+  name?: string;
+}
+
 interface DropDownProps {
   text: string;
   field: string[];
-  options: string[];
+  options: (string | DropDownOption)[];
   setField: (value: string[]) => void;
   placeholder?: string;
   error?: string;
@@ -29,7 +34,8 @@ const DropDown: React.FC<DropDownProps> = ({
 
   const toggleDropdown = () => setIsOpen((prev) => !prev);
 
-  const handleSelect = (value: string) => {
+  const handleSelect = (option: string | DropDownOption) => {
+    const value = typeof option === "string" ? option : String(option.id ?? "");
     if (field[0] !== value) setField([value]);
     setSearchTerm("");
     setIsOpen(false);
@@ -63,9 +69,10 @@ const DropDown: React.FC<DropDownProps> = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const filteredOptions = options.filter((option) =>
-    option.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredOptions = options.filter((option) => {
+    const label = typeof option === "string" ? option : option.name || "";
+    return label.toLowerCase().includes(searchTerm.toLowerCase());
+  });
 
   return (
     <div className="w-full flex flex-col" ref={dropdownRef}>
@@ -92,7 +99,18 @@ const DropDown: React.FC<DropDownProps> = ({
               field.length === 0 ? "text-gray-400" : ""
             }`}
           >
-            {field.length > 0 ? field[0] : placeholder}
+            {field.length > 0
+              ? (() => {
+                  const selected = options.find((o) =>
+                    typeof o === "string"
+                      ? o === field[0]
+                      : String(o.id) === field[0]
+                  );
+                  return typeof selected === "string"
+                    ? selected
+                    : selected?.name || field[0];
+                })()
+              : placeholder}
           </span>
           <ChevronDown
             size={18}
@@ -114,19 +132,27 @@ const DropDown: React.FC<DropDownProps> = ({
                 autoFocus
               />
               {filteredOptions.length > 0 ? (
-                filteredOptions.map((option, idx) => (
-                  <div
-                    key={idx}
-                    onClick={() => handleSelect(option)}
-                    className={`px-3 py-2 rounded-lg text-sm cursor-pointer transition-all duration-200 ${
-                      field.includes(option)
-                        ? "bg-[#EDE0FF] text-[#3C096C] font-medium"
-                        : "hover:bg-gray-100 text-gray-700"
-                    }`}
-                  >
-                    {option}
-                  </div>
-                ))
+                filteredOptions.map((option, idx) => {
+                  const label =
+                    typeof option === "string" ? option : option.name || "";
+                  const value =
+                    typeof option === "string"
+                      ? option
+                      : String(option.id ?? "");
+                  return (
+                    <div
+                      key={idx}
+                      onClick={() => handleSelect(option)}
+                      className={`px-3 py-2 rounded-lg text-sm cursor-pointer transition-all duration-200 ${
+                        field.includes(value)
+                          ? "bg-[#EDE0FF] text-[#3C096C] font-medium"
+                          : "hover:bg-gray-100 text-gray-700"
+                      }`}
+                    >
+                      {label}
+                    </div>
+                  );
+                })
               ) : (
                 <p className="text-gray-400 text-sm px-3 py-2">
                   No results found

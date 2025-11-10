@@ -5,11 +5,17 @@ import { XMarkIcon } from "@heroicons/react/24/solid";
 import TextField from "../textFields/textField";
 import PhoneTextField from "../textFields/phoneNumber";
 import TextBox from "../textFields/textBox";
-import DropDown from "../dropdown/dropdown";
 import DropDownWithOneOption from "../dropdown/dropDownWithOneSelection";
 import RadioButtonGroup from "../radioButton/radioButton";
 import SquareButton from "../button/squareButton";
 import WhiteSquareButton from "../button/whiteSquareButton";
+import Swal from "sweetalert2";
+import {
+  GetCuisines,
+  GetStates,
+  GetCities,
+  AddVendor,
+} from "../../lib/api/vendor/addVendor";
 
 interface AddVendorFormProps {
   showModel: boolean;
@@ -36,18 +42,14 @@ const AddVendorForm: React.FC<AddVendorFormProps> = ({
   const [cuisine, setCuisine] = useState<string[]>([]);
   const [cuisineError, setCuisineError] = useState("");
 
-  const [cuisineOptions, setCuisineOptions] = useState([
-    "Option1",
-    "Option2",
-    "Option3",
-  ]);
+  const [cuisineOptions, setCuisineOptions] = useState([]);
   const [movementType, setMovementType] = useState<string[]>([]);
   const [movementTypeError, setMovementTypeError] = useState("");
 
   const [movementTypeOptions, setMovementTypeOptions] = useState([
-    "Movement 1",
-    "Movement 2",
-    "Movement 3",
+    "event",
+    "travel",
+    "public",
   ]);
   const [buissnessAddress, setBuissnessAddress] = useState("");
   const [buissnessAddressError, setBuissnessAddressError] = useState("");
@@ -55,20 +57,12 @@ const AddVendorForm: React.FC<AddVendorFormProps> = ({
   const [city, setCity] = useState<string[]>([]);
   const [cityError, setCityError] = useState("");
 
-  const [cityOptions, setCityOptions] = useState([
-    "City 1",
-    "City 2",
-    "City 3",
-  ]);
+  const [cityOptions, setCityOptions] = useState([]);
 
   const [state, setState] = useState<string[]>([]);
   const [stateError, setStateError] = useState("");
 
-  const [stateOptions, setStateOptions] = useState([
-    "State 1",
-    "State 2",
-    "State 3",
-  ]);
+  const [stateOptions, setStateOptions] = useState([]);
   const [zip, setZip] = useState("");
   const [zipError, setZipError] = useState("");
   const [distanceTravel, setDistanceTravel] = useState<string[]>([]);
@@ -108,7 +102,7 @@ const AddVendorForm: React.FC<AddVendorFormProps> = ({
   const zipRef = useRef<HTMLInputElement | null>(null);
   const distanceTravelRef = useRef<HTMLInputElement | null>(null);
   const submitRef = useRef<HTMLButtonElement | null>(null);
-
+  const [formSubmitted, setFormSubmitted] = useState(false);
 
   if (!showModel) return null;
 
@@ -156,10 +150,8 @@ const AddVendorForm: React.FC<AddVendorFormProps> = ({
     setBuissnessDescription(value);
     if (!value.trim())
       setBuissnessDescriptionError("Business description is required");
-    else if (value.length < 20)
-      setBuissnessDescriptionError(
-        "Description must be at least 20 characters"
-      );
+    else if (value.length < 5)
+      setBuissnessDescriptionError("Description must be at least 5 characters");
     else setBuissnessDescriptionError("");
   };
 
@@ -180,8 +172,8 @@ const AddVendorForm: React.FC<AddVendorFormProps> = ({
   const handleBuissnessAddressChange = (value: string) => {
     setBuissnessAddress(value);
     if (!value.trim()) setBuissnessAddressError("Business address is required");
-    else if (value.length < 10)
-      setBuissnessAddressError("Address must be at least 10 characters");
+    else if (value.length < 3)
+      setBuissnessAddressError("Address must be at least 3 characters");
     else setBuissnessAddressError("");
   };
 
@@ -291,24 +283,81 @@ const AddVendorForm: React.FC<AddVendorFormProps> = ({
       firstName,
       lastName,
       email,
-      phoneNumber,
-      buissnessName,
-      buissnessDescription,
-      cuisine,
-      movementType,
-      buissnessAddress,
-      city,
-      state,
-      zip,
-      distanceTravel,
-      subscriptionType,
+      phoneNumber: `+${phoneNumber}`,
+      businessName: buissnessName,
+      businessDescription: buissnessDescription,
+      foodCategoryId: cuisine[0],
+      movementType: movementType[0],
+      businessAddress: buissnessAddress,
+      city: city[0],
+      state: state[0],
+      zipcode: zip.toString(),
+      travelDistance: distanceTravel[0],
+      isPremium: subscriptionType == "free" ? false : true,
     };
 
-    console.log("Vendor Data:", vendorData);
-    alert("Vendor added!");
-    resetForm();
-    setModel(false);
+    setFormSubmitted(true);
+    AddVendor(vendorData)
+      .then((res) => {
+        Swal.fire({
+          title: "Success!",
+          text: "Vendor Added successfully.",
+          icon: "success",
+          confirmButtonText: "OK",
+          confirmButtonColor: "#8B4DC5", // custom purple button
+        });
+
+        setFormSubmitted(false);
+        resetForm();
+        setModel(false);
+      })
+
+      .catch((error) => {
+        const errorMessage =
+          error.message || error.error || "Failed to add vendor.";
+        Swal.fire({
+          title: "Error!",
+          text: errorMessage,
+          icon: "error",
+          confirmButtonText: "OK",
+          confirmButtonColor: "#8B4DC5", // purple confirm button
+        });
+        setFormSubmitted(false);
+      });
   };
+
+  useEffect(() => {
+    GetCuisines()
+      .then((res) => {
+        console.log("Data fetched successfully:", res);
+        setCuisineOptions(res.foodCategoryData ? res.foodCategoryData : []);
+      })
+      .catch((error) => {
+        console.error("Error fetching cuisines:", error.message);
+      });
+  }, []);
+
+  useEffect(() => {
+    GetStates()
+      .then((res) => {
+        console.log("Data fetched successfully:", res);
+        setStateOptions(res.stateData ? res.stateData : []);
+      })
+      .catch((error) => {
+        console.error("Error fetching states:", error.message);
+      });
+  }, []);
+
+  useEffect(() => {
+    GetCities()
+      .then((res) => {
+        console.log("Data fetched successfully:", res);
+        setCityOptions(res.cityData ? res.cityData : []);
+      })
+      .catch((error) => {
+        console.error("Error fetching states:", error.message);
+      });
+  }, []);
 
   return (
     <motion.div
@@ -398,7 +447,7 @@ const AddVendorForm: React.FC<AddVendorFormProps> = ({
           onKeyDown={(e) => handleKeyDown(e, cuisineRef)}
         />
 
-        <DropDown
+        <DropDownWithOneOption
           text="Cuisine"
           field={cuisine}
           options={cuisineOptions}
@@ -409,7 +458,7 @@ const AddVendorForm: React.FC<AddVendorFormProps> = ({
           onKeyDown={(e) => handleKeyDown(e, movementTypeRef)}
         />
 
-        <DropDown
+        <DropDownWithOneOption
           text="Movement Type"
           field={movementType}
           options={movementTypeOptions}
@@ -466,7 +515,7 @@ const AddVendorForm: React.FC<AddVendorFormProps> = ({
           />
         </div>
 
-        <DropDown
+        <DropDownWithOneOption
           text="Event Travel Distance"
           field={distanceTravel}
           options={distanceTravelOptions}
@@ -499,10 +548,15 @@ const AddVendorForm: React.FC<AddVendorFormProps> = ({
       <div className="p-6 border-t border-gray-200 flex justify-end gap-x-3  gap-x-3">
         <div className="flex justify-end gap-x-3 ">
           <div>
-            <WhiteSquareButton text="Cancel" onClick={handleCancel} />
+            <WhiteSquareButton text="Cancel" isTriggered={formSubmitted} onClick={handleCancel} />
           </div>
           <div className="flex-1">
-            <SquareButton text="Send Form" onClick={handleSubmit} buttonRef={submitRef} />
+            <SquareButton
+              text="Send Form"
+              onClick={handleSubmit}
+              isTriggered={formSubmitted}
+              buttonRef={submitRef}
+            />
           </div>
         </div>
       </div>

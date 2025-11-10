@@ -7,7 +7,7 @@ import Button from "../../components/button/squareButton";
 import Table from "../../components/table/vendorTable";
 import Filter from "../../components/filters/page";
 import AddVendorForm from "../../components/form/addVendorForm";
-import { GetVendors } from "../../lib/api/vendorApi";
+import { GetVendors } from "../../lib/api/vendor/vendorApi";
 
 const Page = () => {
   const [search, setSearch] = useState("");

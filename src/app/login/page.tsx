@@ -10,11 +10,11 @@ import { Login } from "../../lib/api/authApi";
 
 const Page = () => {
   const router = useRouter();
-  // const [email, setEmail] = useState<string>("adminuser@foodmagnet.app");
-  const [email, setEmail] = useState<string>("");
+  const [email, setEmail] = useState<string>("adminuser@foodmagnet.app");
+  // const [email, setEmail] = useState<string>("");
   const [emailError, setEmailError] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  // const [password, setPassword] = useState<string>("6glrX^NP*@pWKvI");
+  // const [password, setPassword] = useState<string>("");
+  const [password, setPassword] = useState<string>("6glrX^NP*@pWKvI");
   const [passwordError, setPasswordError] = useState<string>("");
   const [apiError, setApiError] = useState<string>("");
   const [rememberMe, setRememberMe] = useState(false);
