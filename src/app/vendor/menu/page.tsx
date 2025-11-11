@@ -116,9 +116,12 @@ const Page = () => {
             ))}
             {itemsWithCategory.map((category, catInd) => (
               <div key={catInd}>
-                <span className="font-bold text-lg text-gray-800">
+                <div className="mb-6">
+                  <span className="font-bold text-lg text-gray-800">
                   {category.name}
                 </span>
+                </div>
+                
                 {category &&category.MenuItems && category.MenuItems.length > 0 && category.MenuItems.map((val, ind) => (
                   <motion.div
                     key={`entree-${ind}`}

@@ -97,7 +97,7 @@ const Page = () => {
               {
                 name: "Availability",
                 icon: <CalendarDays size={18} />,
-                data: `Avaialable for ${res.foodTruckData.availability} only`,
+                data: `Available for ${res.foodTruckData.availability} only`,
               },
               {
                 name: "Electrical Requirement",

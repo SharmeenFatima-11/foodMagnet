@@ -167,15 +167,15 @@ const VendorSidebarCard: React.FC<VendorSidebarCardProps> = ({
   return (
     <div className="flex flex-col gap-y-2 py-4 h-1/4 bg-white rounded-md p-6 border border-gray-300 rounded-xl shadow-lg my-6">
       {isPublished && isPublished == true ? (
-        <div className="flex items-center justify-between">
-          <div className="flex flex-col w-1/2 gap-y-2">
+        <div className="flex flex-wrap sm:flex-nowrap items-center justify-between gap-4">
+          <div className="flex flex-col w-full sm:w-1/2 gap-y-2">
             <span className="font-bold text-[#343A40]">Published Account</span>
-            <span>
+            <span className="lg:text-lg text-sm break-words">
               This profile is live and visible to customers. Vendors can now
               access premium features and appear in search.
             </span>
           </div>
-          <div className="">
+          <div className="w-full sm:w-auto flex justify-start sm:justify-end">
             <SquareButton
               text="Revoke"
               onClick={handleRevoke}
