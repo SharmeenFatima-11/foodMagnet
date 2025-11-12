@@ -92,7 +92,7 @@ export const AddVendor = async (body: {
       error.response?.data?.error?.message ||
       error.message ||
       error.error ||
-      "Failed to fetch vendors";
+      "Failed to all vendor";
 
     console.log("Login error:", message);
     throw new Error(message);

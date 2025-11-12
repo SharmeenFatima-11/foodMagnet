@@ -107,7 +107,7 @@ const DeviceActivationCards: React.FC<VendorSidebarCardProps> = ({
       })
       .catch((error) => {
         const errorMessage =
-          error.message || error.error || "Failed to activate device.";
+          error.message || error.error || "Failed to get active devices.";
 
         Swal.fire({
           title: "Error!",
@@ -135,7 +135,7 @@ const DeviceActivationCards: React.FC<VendorSidebarCardProps> = ({
       })
       .catch((error) => {
         const errorMessage =
-          error.message || error.error || "Failed to activate device.";
+          error.message || error.error || "Failed to deactivate device.";
 
         Swal.fire({
           title: "Error!",

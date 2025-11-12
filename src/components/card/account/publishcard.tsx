@@ -151,7 +151,7 @@ const VendorSidebarCard: React.FC<VendorSidebarCardProps> = ({
       })
       .catch((error) => {
         const errorMessage =
-          error.message || error.error || "Failed to publish account";
+          error.message || error.error || "Failed to revoke account";
 
         Swal.fire({
           title: "Error!",

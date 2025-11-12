@@ -29,7 +29,7 @@ function LayoutContent({
   isVendorRoute: boolean;
 }) {
   return (
-    <div className="flex min-h-screen h-screen">
+    <div className="flex min-h-screen h-screen text-[#000000]">
       <div>
         <Sidebar />
       </div>

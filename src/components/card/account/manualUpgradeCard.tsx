@@ -107,7 +107,7 @@ const ManualUpgradeCard: React.FC<VendorSidebarCardProps> = ({ id }) => {
       })
       .catch((error) => {
         const errorMessage =
-          error.message || error.error || "Failed to activate device.";
+          error.message || error.error || "Failed to create coupon.";
 
         Swal.fire({
           title: "Error!",
@@ -145,7 +145,7 @@ const ManualUpgradeCard: React.FC<VendorSidebarCardProps> = ({ id }) => {
       })
       .catch((error) => {
         const errorMessage =
-          error.message || error.error || "Failed to activate device.";
+          error.message || error.error || "Failed to get coupons.";
 
         Swal.fire({
           title: "Error!",

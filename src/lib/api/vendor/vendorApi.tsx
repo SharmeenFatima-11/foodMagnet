@@ -4,7 +4,6 @@ export const GetVendors = async () => {
   try {
     let token = localStorage.getItem("userData");
     token = token ? JSON.parse(token).idToken : null;
-    console.log("Token in GetVendors:", token);
     const { data } = await axiosInstance.get("/foodTrucks", {headers: { Authorization: `Bearer ${token}` }});
     return data;
   } catch (error: any) {

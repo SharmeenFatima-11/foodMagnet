@@ -38,7 +38,7 @@ const Page = () => {
             setLoading(false);
           })
           .catch((error) => {
-            console.error("Error fetching vendor details:", error.message);
+            console.error("Error fetching popular items:", error.message);
             setLoading(false);
           });
       }
@@ -53,7 +53,7 @@ const Page = () => {
         setItemsWithCategory(res.data);
       })
       .catch((error) => {
-        console.error("Error fetching vendor details:", error.message);
+        console.error("Error fetching items", error.message);
       });
   }, [vendorId]);
 

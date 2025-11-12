@@ -37,7 +37,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <div className="flex flex-col md:flex-row bg-gray-50">
+    <div className="flex flex-col md:flex-row bg-gray-50 text-[#000000]">
       {/* 🟣 HEADER — visible only on small screens */}
       <div className="block md:hidden bg-white w-full border-b border-gray-100 shadow-md">
         <div className="p-4">

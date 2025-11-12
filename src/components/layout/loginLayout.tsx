@@ -11,7 +11,7 @@ export default function ClientLayout({
 
 function LayoutContent({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex flex-col md:flex-row min-h-screen">
+    <div className="flex flex-col md:flex-row min-h-screen text-[#000000]">
       {/* Left side - hidden on small screens */}
       <div className="hidden md:flex flex-1">
         <LoginLeft />

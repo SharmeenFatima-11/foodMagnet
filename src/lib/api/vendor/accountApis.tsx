@@ -70,7 +70,7 @@ export const ActivateDevice = async (
       error.response?.data?.message ||
       error.response?.data?.error ||
       error.response?.data?.error?.message ||
-      "Failed to revoke account";
+      "Failed to activate device";
     throw new Error(message);
   }
 };
@@ -87,7 +87,7 @@ export const GetActivateDevice = async (userId: any) => {
       error.response?.data?.message ||
       error.response?.data?.error ||
       error.response?.data?.error?.message ||
-      "Failed to revoke account";
+      "Failed to get active devices";
     throw new Error(message);
   }
 };
@@ -105,7 +105,7 @@ export const DeActivateDevice = async (body: { foodTruckId: string }) => {
       error.response?.data?.message ||
       error.response?.data?.error ||
       error.response?.data?.error?.message ||
-      "Failed to revoke account";
+      "Failed to deactivate device";
     throw new Error(message);
   }
 };
@@ -128,7 +128,7 @@ export const CreateCoupon = async (body: {
       error.response?.data?.message ||
       error.response?.data?.error ||
       error.response?.data?.error?.message ||
-      "Failed to revoke account";
+      "Failed to create coupon";
     throw new Error(message);
   }
 };
@@ -143,7 +143,7 @@ export const GetVendorCoupons = async (userId: any) => {
       error.response?.data?.message ||
       error.response?.data?.error ||
       error.response?.data?.error?.message ||
-      "Failed to revoke account";
+      "Failed to get coupon";
     throw new Error(message);
   }
 };

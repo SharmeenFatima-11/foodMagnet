@@ -4,6 +4,7 @@ import { useState, useMemo, useRef, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { Bell } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import ShowNotification from "../form/notifications";
 
 const Header = () => {
   const router = useRouter();
@@ -11,6 +12,8 @@ const Header = () => {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("John Doe");
   const [image, setImage] = useState("https://i.pravatar.cc/100");
+  const [showNotificationModal, setShowNotificationModal] = useState(false);
+  
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Close dropdown on outside click
@@ -72,6 +75,7 @@ const Header = () => {
           whileTap={{ scale: 0.9 }}
           transition={{ type: "spring", stiffness: 250, damping: 15 }}
           className="relative cursor-pointer"
+          onClick={() => setShowNotificationModal(true)}
         >
           <Bell className="w-6 h-6 text-[#441372]" />
           <motion.span
@@ -183,6 +187,25 @@ const Header = () => {
           </AnimatePresence>
         </div>
       </div>
+
+       {/* 🧩 show Notification Modal */}
+      <AnimatePresence>
+        {showNotificationModal && (
+          <>
+            <motion.div
+              className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowNotificationModal(false)}
+            />
+            <ShowNotification
+              showModel={showNotificationModal}
+              setModel={setShowNotificationModal}
+            />
+          </>
+        )}
+      </AnimatePresence>
     </motion.header>
   );
 };

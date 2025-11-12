@@ -12,6 +12,7 @@
     "@heroicons/react": "^2.2.0",
     "axios": "^1.12.2",
     "country-telephone-data": "^0.6.3",
+    "date-fns": "^4.1.0",
     "framer-motion": "^12.23.24",
     "lucide-react": "^0.545.0",
     "next": "15.5.4",

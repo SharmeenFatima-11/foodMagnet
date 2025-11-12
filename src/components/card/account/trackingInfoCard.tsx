@@ -58,25 +58,6 @@ const TrackingInfoCards: React.FC<VendorSidebarCardProps> = ({
     },
   ]);
 
-  useEffect(() => {
-    GetActivateDevice(id)
-      .then((data) => {
-        setTrackingData(data);
-      })
-      .catch((error) => {
-        const errorMessage =
-          error.message || error.error || "Failed to activate device.";
-
-        Swal.fire({
-          title: "Error!",
-          text: errorMessage,
-          icon: "error",
-          confirmButtonText: "OK",
-          confirmButtonColor: "#8B4DC5", // purple confirm button
-        });
-      });
-  }, []);
-
   // Filter tracking numbers based on search input
   // Filter tracking numbers based on search input
   const filteredData = useMemo(() => {
