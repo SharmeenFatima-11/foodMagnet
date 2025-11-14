@@ -21,22 +21,23 @@ const CouponTable: React.FC<CouponTableProps> = ({ data }) => {
 
   const sortedData = useMemo(() => {
     if (!Array.isArray(data)) return [];
-if (!sortConfig.key || !sortConfig.direction) return data;
+    if (!sortConfig.key || !sortConfig.direction) return data;
 
+    return Array.isArray(data)
+      ? [...data].sort((a, b) => {
+          const key = sortConfig.key!;
+          const valA = a[key];
+          const valB = b[key];
 
-    return Array.isArray(data)? [...data].sort((a, b) => {
-      const key = sortConfig.key!;
-      const valA = a[key];
-      const valB = b[key];
+          if (typeof valA === "number" && typeof valB === "number") {
+            return sortConfig.direction === "asc" ? valA - valB : valB - valA;
+          }
 
-      if (typeof valA === "number" && typeof valB === "number") {
-        return sortConfig.direction === "asc" ? valA - valB : valB - valA;
-      }
-
-      return sortConfig.direction === "asc"
-        ? String(valA).localeCompare(String(valB))
-        : String(valB).localeCompare(String(valA));
-    }): [];
+          return sortConfig.direction === "asc"
+            ? String(valA).localeCompare(String(valB))
+            : String(valB).localeCompare(String(valA));
+        })
+      : [];
   }, [data, sortConfig]);
 
   const handleSort = (key: keyof Coupon) => {

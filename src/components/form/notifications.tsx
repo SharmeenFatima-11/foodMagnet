@@ -61,7 +61,7 @@ const AddVendorForm: React.FC<AddVendorFormProps> = ({
       exit={{ x: "100%" }}
       transition={{ type: "tween", duration: 0.3 }}
     >
-      {notifications.length === 0 ? (
+      {notifications.length == 0 ? (
         <div className="flex-grow flex flex-col items-center justify-center p-6">
           <img
             src="/notifications.svg"
@@ -73,7 +73,7 @@ const AddVendorForm: React.FC<AddVendorFormProps> = ({
           </p>
         </div>
       ) : (
-        <div>
+        <div className="flex flex-col h-full">
           {/* Header */}
           <div className="flex justify-between items-center border-b border-gray-200 p-6">
             <h2 className="text-lg font-semibold text-gray-800">
