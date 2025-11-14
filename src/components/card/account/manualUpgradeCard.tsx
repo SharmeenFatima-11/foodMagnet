@@ -101,7 +101,11 @@ const ManualUpgradeCard: React.FC<VendorSidebarCardProps> = ({ id }) => {
       expiry_date: expiryDateNumber,
     })
       .then((data) => {
-        setCoupons((prev) => [...prev, newCoupon]);
+        if (coupons.length == 0) {
+          setCoupons([newCoupon]);
+        } else {
+          setCoupons((prev) => [...prev, newCoupon]);
+        }
         resetFields();
         setIsPublishedCalled(false);
       })
@@ -141,7 +145,8 @@ const ManualUpgradeCard: React.FC<VendorSidebarCardProps> = ({ id }) => {
     GetVendorCoupons(id)
       .then((data) => {
         console.log("data", data);
-        setCoupons(data);
+        setCoupons(Array.isArray(data) ? data : []);
+
       })
       .catch((error) => {
         const errorMessage =
@@ -207,8 +212,7 @@ const ManualUpgradeCard: React.FC<VendorSidebarCardProps> = ({ id }) => {
         />
       </div>
 
-      
-        <CouponTable data={coupons} />
+      <CouponTable data={coupons} />
     </div>
   );
 };

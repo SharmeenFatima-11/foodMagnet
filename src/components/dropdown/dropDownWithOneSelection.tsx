@@ -36,7 +36,7 @@ const DropDown: React.FC<DropDownProps> = ({
 
   const handleSelect = (option: string | DropDownOption) => {
     const value = typeof option === "string" ? option : String(option.id ?? "");
-    if (field[0] !== value) setField([value]);
+    setField([value]);
     setSearchTerm("");
     setIsOpen(false);
   };
@@ -142,7 +142,10 @@ const DropDown: React.FC<DropDownProps> = ({
                   return (
                     <div
                       key={idx}
-                      onClick={() => handleSelect(option)}
+                      onClick={(e) => {
+                        e.stopPropagation(); // ✅ stop the parent toggle
+                        handleSelect(option); // close dropdown and set value
+                      }}
                       className={`px-3 py-2 rounded-lg text-sm cursor-pointer transition-all duration-200 ${
                         field.includes(value)
                           ? "bg-[#EDE0FF] text-[#3C096C] font-medium"

@@ -78,10 +78,10 @@ const Header = () => {
           onClick={() => setShowNotificationModal(true)}
         >
           <Bell className="w-6 h-6 text-[#441372]" />
-          <motion.span
+          {/* <motion.span
             layout
             className="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full"
-          />
+          /> */}
         </motion.div>
 
         {/* User Avatar + Dropdown */}
