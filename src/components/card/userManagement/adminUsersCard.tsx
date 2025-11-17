@@ -4,9 +4,11 @@ import Table from "../../../components/table/usersTable";
 
 interface AdminUserCardProps {
   users: {
-    name: string;
+    id: string;
+    firstName: string;
+    lastName: string;
     email: string;
-    date: string;
+    dateAdded: string;
   }[];
   isAdmin: boolean;
   setModel: (value: boolean) => void;
@@ -21,6 +23,7 @@ const AdminUserCard: React.FC<AdminUserCardProps> = ({
 }) => {
   const handleEdit = (user: any) => {
     setModel(user);
+    console.log("edit user", user);
     // open edit popup logic here
   };
 

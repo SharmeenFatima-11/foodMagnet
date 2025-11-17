@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -8,30 +8,29 @@ import AdminUserCard from "../../components/card/userManagement/adminUsersCard";
 import UserForm from "../../components/form/addUserForm";
 import EditUserForm from "../../components/form/editUserForm";
 import DeleteUserCard from "../../components/card/userManagement/deleteUser";
+import { GetUsers } from "../../lib/api/userManagement/userApis";
 
 const Page = () => {
   const router = useRouter();
   const [showAddUserPopup, setShowAddUserPopup] = useState(false);
+  const [isAdded, setIsAdded] = useState(false);
   const [showEditUserPopup, setShowEditUserPopup] = useState(false);
   const [showDeleteUserPopup, setShowDeleteUserPopup] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
-  const [adminUsers, setAdminUsers] = useState([
-    {
-      name: "Mercedes Johnson",
-      email: "mercedes.johnson@gmail.com",
-      date: "06/12/20",
-    },
-    {
-      name: "Frances Canales",
-      email: "frances.canales@gmail.com",
-      date: "06/12/20",
-    },
-    {
-      name: "Jessica Balara",
-      email: "jessica.balara@gmail.com",
-      date: "06/12/20",
-    },
-  ]);
+  const [adminUsers, setAdminUsers] = useState([]);
+  const [viewOnlyUsers, setViewOnlyUsers] = useState([])
+
+  useEffect(() => {
+    GetUsers()
+      .then((data) => {
+        console.log("users", data);
+        setAdminUsers(data.adminUsers);
+        setViewOnlyUsers(data.viewOnlyUsers);
+      })
+      .catch((error) => {
+        console.error("get users failed:", error.message);
+      });
+  }, [isAdded]);
 
   const handleEdit = (data: any) => {
     console.log("handle edit");
@@ -81,7 +80,7 @@ const Page = () => {
         setdeleteModel={handleDelete}
       />
       <AdminUserCard
-        users={adminUsers}
+        users={viewOnlyUsers}
         isAdmin={false}
         setModel={handleEdit}
         setdeleteModel={handleDelete}
@@ -100,6 +99,7 @@ const Page = () => {
             <UserForm
               showModel={showAddUserPopup}
               setModel={setShowAddUserPopup}
+              setIsAdded={setIsAdded}
             />
           </motion.div>
         )}
@@ -119,6 +119,7 @@ const Page = () => {
               showModel={showEditUserPopup}
               setModel={setShowEditUserPopup}
               user={selectedUser}
+              setIsAdded={setIsAdded}
             />
           </motion.div>
         )}
@@ -135,12 +136,9 @@ const Page = () => {
             className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40"
           >
             <DeleteUserCard
-              showModel={showDeleteUserPopup}
               setModel={setShowDeleteUserPopup}
               user={selectedUser}
-              onDelete={(email) => {
-                setAdminUsers((prev) => prev.filter((u) => u.email !== email));
-              }}
+              setIsAdded={setIsAdded}
             />
           </motion.div>
         )}

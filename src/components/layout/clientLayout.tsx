@@ -4,6 +4,8 @@ import Sidebar from "../sidebar/page";
 import Header from "../header/page";
 import VendorLayout from "./vendorLayout";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+import { ViewOnlyContext } from "@/context/ViewOnlyContext";
 
 export default function ClientLayout({
   children,
@@ -11,16 +13,25 @@ export default function ClientLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const [isViewOnly, setIsViewOnly] = useState(false);
 
-  // Check if path starts with /vendor
+  useEffect(() => {
+    let userRole = localStorage.getItem("userData");
+    userRole = userRole ? JSON.parse(userRole).userRole : null;
+    if (userRole === "viewOnly") {
+      setIsViewOnly(true);
+    }
+  }, []);
+
   const isVendorRoute = pathname.startsWith("/vendor/");
 
   return (
-    <LayoutContent isVendorRoute={isVendorRoute}>{children}</LayoutContent>
+    <ViewOnlyContext.Provider value={{ isViewOnly }}>
+      <LayoutContent isVendorRoute={isVendorRoute}>{children}</LayoutContent>
+    </ViewOnlyContext.Provider>
   );
 }
 
-// Separate component to use the context
 function LayoutContent({
   children,
   isVendorRoute,

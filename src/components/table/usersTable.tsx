@@ -1,11 +1,14 @@
 "use client";
 import React from "react";
 import { Pencil, Trash2 } from "lucide-react";
+import { useViewOnly } from "@/context/ViewOnlyContext";
 
 interface User {
-  name: string;
+  id: string;
+  firstName: string;
+  lastName: string;
   email: string;
-  date: string;
+  dateAdded: string;
 }
 
 interface AdminUserCardProps {
@@ -19,10 +22,11 @@ const AdminUserCard: React.FC<AdminUserCardProps> = ({
   onEdit,
   onDelete,
 }) => {
+  const { isViewOnly } = useViewOnly();
   return (
     <div className="w-full px-4 sm:px-10 mt-4">
       {/* Header (hidden on mobile) */}
-      <div className="hidden sm:grid sm:grid-cols-3 border-b border-[#E5E5E5] pb-2 mb-2 text-gray-500 text-sm font-medium">
+      <div className="hidden sm:flex sm:justify-between sm:pr-18  border-b border-[#E5E5E5] pb-2 mb-2 text-gray-500 text-sm font-medium">
         <div className="col-span-2">Name</div>
         <div className="text-left">Date Added</div>
       </div>
@@ -37,7 +41,7 @@ const AdminUserCard: React.FC<AdminUserCardProps> = ({
             {/* User Info */}
             <div className="flex flex-col sm:col-span-2 w-full">
               <span className="font-semibold text-gray-800 text-base break-words">
-                {user.name}
+                {user.firstName} {user.lastName}
               </span>
               <span className="text-gray-500 text-sm break-words">
                 {user.email}
@@ -45,21 +49,21 @@ const AdminUserCard: React.FC<AdminUserCardProps> = ({
 
               {/* Date & Actions (on mobile) */}
               <div className="flex sm:hidden justify-between items-center mt-3 w-full">
-                <span className="text-gray-600 text-sm">{user.date}</span>
+                <span className="text-gray-600 text-sm">{new Date(user.dateAdded).toLocaleDateString('en-GB')}</span>
                 <div className="flex gap-x-3">
                   <button
                     onClick={() => onEdit(user)}
                     className="p-2 hover:bg-gray-100 rounded-lg transition"
                     aria-label="Edit user"
                   >
-                    <Pencil className="w-4 h-4 text-gray-700" />
+                    <Pencil className="w-4 h-4 text-gray-700 cursor-pointer" />
                   </button>
                   <button
                     onClick={() => onDelete(user)}
                     className="p-2 hover:bg-gray-100 rounded-lg transition"
                     aria-label="Delete user"
                   >
-                    <Trash2 className="w-4 h-4 text-gray-700" />
+                    <Trash2 className="w-4 h-4 text-gray-700 cursor-pointer" />
                   </button>
                 </div>
               </div>
@@ -67,23 +71,25 @@ const AdminUserCard: React.FC<AdminUserCardProps> = ({
 
             {/* Date & Actions (on desktop) */}
             <div className="hidden sm:flex justify-end items-center gap-x-6">
-              <span className="text-gray-600 text-sm">{user.date}</span>
+              <span className="text-gray-600 text-sm">{new Date(user.dateAdded).toLocaleDateString('en-GB')}</span>
+             {isViewOnly ? <div className="w-12"></div> : ( 
               <div className="flex justify-end">
                 <button
                   onClick={() => onEdit(user)}
                   className="p-1 hover:bg-gray-100 rounded-lg transition"
                   aria-label="Edit user"
                 >
-                  <Pencil className="w-4 h-4 text-gray-700" />
+                  <Pencil className="w-4 h-4 text-gray-700 cursor-pointer" />
                 </button>
                 <button
                   onClick={() => onDelete(user)}
                   className="p-1 hover:bg-gray-100 rounded-lg transition"
                   aria-label="Delete user"
                 >
-                  <Trash2 className="w-4 h-4 text-gray-700" />
+                  <Trash2 className="w-4 h-4 text-gray-700 cursor-pointer" />
                 </button>
               </div>
+             )}
             </div>
           </div>
         ))}

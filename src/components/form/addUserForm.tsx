@@ -6,13 +6,19 @@ import TextField from "../textFields/textField";
 import DropDown from "../dropdown/dropDownWithOneSelection";
 import SquareButton from "../button/squareButton";
 import WhiteSquareButton from "../button/whiteSquareButton";
+import Swal from "sweetalert2";
+import { AddUsers } from "../../lib/api/userManagement/userApis";
 
 interface UserFormProps {
   showModel: boolean;
   setModel: (value: boolean) => void;
+  setIsAdded: React.Dispatch<React.SetStateAction<boolean>>;
 }
-
-const UserForm: React.FC<UserFormProps> = ({ showModel, setModel }) => {
+const UserForm: React.FC<UserFormProps> = ({
+  showModel,
+  setModel,
+  setIsAdded,
+}) => {
   const [firstName, setFirstName] = useState("");
   const [firstNameError, setFirstNameError] = useState("");
   const [lastName, setLastName] = useState("");
@@ -21,11 +27,11 @@ const UserForm: React.FC<UserFormProps> = ({ showModel, setModel }) => {
   const [emailError, setEmailError] = useState("");
   const [permission, setPermission] = useState<string[]>([]);
   const [permissionError, setPermissionError] = useState("");
+  const [added, setAdded] = useState(false);
 
   const [permissionOptions, setPermissionOptions] = useState([
-    "Option1",
-    "Option2",
-    "Option3",
+    "admin",
+    "viewOnly",
   ]);
 
   const [formError, setFormError] = useState("");
@@ -108,18 +114,41 @@ const UserForm: React.FC<UserFormProps> = ({ showModel, setModel }) => {
     }
 
     setFormError("");
+    setAdded(true);
 
     const userData = {
       firstName,
       lastName,
       email,
-      permission,
+      permission: permission[0],
     };
+    AddUsers(userData)
+      .then((data) => {
+        Swal.fire({
+          title: "Success!",
+          text: "User added successfully.",
+          icon: "success",
+          confirmButtonText: "OK",
+          confirmButtonColor: "#8B4DC5", // custom purple button
+        });
+        resetForm();
+        setModel(false);
+        setAdded(false);
+        setIsAdded(prev => !prev);
+      })
+      .catch((error) => {
+        const errorMessage =
+          error.message || error.error || "Failed to add user.";
 
-    console.log("User Data:", userData);
-    alert("User added!");
-    resetForm();
-    setModel(false);
+        Swal.fire({
+          title: "Error!",
+          text: errorMessage,
+          icon: "error",
+          confirmButtonText: "OK",
+          confirmButtonColor: "#8B4DC5", // purple confirm button
+        });
+        setAdded(false);
+      });
   };
 
   return (
@@ -197,13 +226,18 @@ const UserForm: React.FC<UserFormProps> = ({ showModel, setModel }) => {
       <div className="p-6 border-t border-gray-200 flex justify-end gap-x-3  gap-x-3">
         <div className="flex justify-end gap-x-3 ">
           <div>
-            <WhiteSquareButton text="Cancel" onClick={handleCancel} />
+            <WhiteSquareButton
+              text="Cancel"
+              onClick={handleCancel}
+              isTriggered={added}
+            />
           </div>
           <div className="flex-1 w-30">
             <SquareButton
               text="Add"
               onClick={handleSubmit}
               buttonRef={submitRef}
+              isTriggered={added}
             />
           </div>
         </div>

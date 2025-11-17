@@ -5,24 +5,35 @@ import { XMarkIcon } from "@heroicons/react/24/solid";
 import TextField from "../textFields/textField";
 import SquareButton from "../button/squareButton";
 import WhiteSquareButton from "../button/whiteSquareButton";
+import { UpdateUsers } from "../../lib/api/userManagement/userApis";
+import Swal from "sweetalert2";
 
 interface UserFormProps {
   showModel: boolean;
   setModel: (value: boolean) => void;
+  setIsAdded: React.Dispatch<React.SetStateAction<boolean>>;
   user: {
-    name: string;
+    id: string;
+    firstName: string;
+    lastName: string;
     email: string;
-    date: string;
+    dateAdded: string;
   } | null;
 }
 
-const UserForm: React.FC<UserFormProps> = ({ showModel, setModel, user }) => {
+const UserForm: React.FC<UserFormProps> = ({
+  showModel,
+  setModel,
+  user,
+  setIsAdded,
+}) => {
   const [firstName, setFirstName] = useState("");
   const [firstNameError, setFirstNameError] = useState("");
   const [lastName, setLastName] = useState("");
   const [lastNameError, setLastNameError] = useState("");
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState("");
+  const [added, setAdded] = useState(false);
 
   const [formError, setFormError] = useState("");
 
@@ -94,25 +105,60 @@ const UserForm: React.FC<UserFormProps> = ({ showModel, setModel, user }) => {
     }
 
     setFormError("");
+    if (!user || !user.id) {
+      console.log("user in condition", user)
+      Swal.fire({
+        title: "Error!",
+        text: "User Id cannot be null",
+        icon: "error",
+        confirmButtonText: "OK",
+        confirmButtonColor: "#8B4DC5", // purple confirm button
+      });
+      return;
+    }
 
     const userData = {
+      userId: user.id.toString(),
       firstName,
       lastName,
       email,
     };
+    setAdded(true);
 
-    console.log("User Data:", userData);
-    alert("User added!");
-    resetForm();
-    setModel(false);
+    UpdateUsers(userData)
+      .then((data) => {
+        Swal.fire({
+          title: "Success!",
+          text: "User updated successfully.",
+          icon: "success",
+          confirmButtonText: "OK",
+          confirmButtonColor: "#8B4DC5", // custom purple button
+        });
+        resetForm();
+        setModel(false);
+        setAdded(false);
+        setIsAdded((prev) => !prev);
+      })
+      .catch((error) => {
+        const errorMessage =
+          error.message || error.error || "Failed to update user.";
+
+        Swal.fire({
+          title: "Error!",
+          text: errorMessage,
+          icon: "error",
+          confirmButtonText: "OK",
+          confirmButtonColor: "#8B4DC5", // purple confirm button
+        });
+        setAdded(false);
+      });
   };
 
-  useEffect(()=> {
-    setFirstName(user?.name? user?.name: "")
-    setLastName(user?.name? user?.name: "")
-    setEmail(user?.email? user?.email: "")
-
-  }, [user])
+  useEffect(() => {
+    setFirstName(user?.firstName ? user?.firstName : "");
+    setLastName(user?.lastName ? user?.lastName : "");
+    setEmail(user?.email ? user?.email : "");
+  }, [user]);
 
   return (
     <motion.div
@@ -128,7 +174,7 @@ const UserForm: React.FC<UserFormProps> = ({ showModel, setModel, user }) => {
           Edit User Information
         </h2>
         <button onClick={() => setModel(false)}>
-          <XMarkIcon className="w-5 h-5 text-gray-600 hover:text-gray-800" />
+          <XMarkIcon className="w-5 h-5 text-gray-600 hover:text-gray-800 cursor-pointer" />
         </button>
       </div>
 
@@ -182,13 +228,18 @@ const UserForm: React.FC<UserFormProps> = ({ showModel, setModel, user }) => {
       <div className="p-6 border-t border-gray-200 flex justify-end gap-x-3  gap-x-3">
         <div className="flex justify-end gap-x-3 ">
           <div>
-            <WhiteSquareButton text="Cancel" onClick={handleCancel} />
+            <WhiteSquareButton
+              text="Cancel"
+              onClick={handleCancel}
+              isTriggered={added}
+            />
           </div>
           <div className="flex-1">
             <SquareButton
               text="Save Changes"
               onClick={handleSubmit}
               buttonRef={submitRef}
+              isTriggered={added}
             />
           </div>
         </div>

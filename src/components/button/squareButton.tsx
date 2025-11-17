@@ -1,4 +1,5 @@
 import React from "react";
+import { useViewOnly } from "@/context/ViewOnlyContext";
 
 interface ButtonProps {
   text: string;
@@ -8,12 +9,13 @@ interface ButtonProps {
 }
 
 const Button: React.FC<ButtonProps> = ({ text, onClick, buttonRef, isTriggered }) => {
+  const { isViewOnly } = useViewOnly();
   return (
     <div className="w-full flex flex-col">
       <button
         ref={buttonRef}
         onClick={() => onClick(text)}
-        disabled={!!isTriggered}
+        disabled={!!isTriggered || isViewOnly}
         className="
         cursor-pointer
           w-full bg-[#8B4DC5] text-md text-white py-2 px-4 rounded-md
@@ -24,9 +26,10 @@ const Button: React.FC<ButtonProps> = ({ text, onClick, buttonRef, isTriggered }
           cursor-pointer
           active:scale-[0.98]
           focus:outline-none focus:ring-0
+          disabled:opacity-60 disabled:cursor-not-allowed
         "
       >
-        {isTriggered ? "Processing..." : text}
+        {text}
       </button>
     </div>
   );

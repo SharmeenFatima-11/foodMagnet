@@ -8,11 +8,13 @@ import Table from "../../components/table/vendorTable";
 import Filter from "../../components/filters/page";
 import AddVendorForm from "../../components/form/addVendorForm";
 import { GetVendors } from "../../lib/api/vendor/vendorApi";
+import { useViewOnly } from "@/context/ViewOnlyContext";
 
 const Page = () => {
   const [search, setSearch] = useState("");
   const [showFilter, setShowFilter] = useState(false);
   const [showAddVendorModal, setShowAddVendorModal] = useState(false);
+  const { isViewOnly } = useViewOnly();
 
   const [filters, setFilters] = useState({
     subscription: "", // e.g. "Free", "Standard"
@@ -24,60 +26,56 @@ const Page = () => {
 
   // ✅ Compute filtered + searched data
   const filteredData = useMemo(() => {
-  const query = search.toLowerCase().trim();
-  const today = new Date();
+    const query = search.toLowerCase().trim();
+    const today = new Date();
 
-  return data.filter((item) => {
-    // Compute status
-    const permitDate = new Date(item.permitExpiration);
-    const monthsUntilExpiry =
-      (permitDate.getFullYear() - today.getFullYear()) * 12 +
-      (permitDate.getMonth() - today.getMonth());
+    return data.filter((item) => {
+      // Compute status
+      const permitDate = new Date(item.permitExpiration);
+      const monthsUntilExpiry =
+        (permitDate.getFullYear() - today.getFullYear()) * 12 +
+        (permitDate.getMonth() - today.getMonth());
 
-    let status = "inactive";
+      let status = "inactive";
 
-    if (item.activeStatus) {
-      if (permitDate < today) {
-        status = "expired";
-      } else if (monthsUntilExpiry <= 2) {
-        status = "expiring soon";
-      } else {
-        status = "active";
+      if (item.activeStatus) {
+        if (permitDate < today) {
+          status = "expired";
+        } else if (monthsUntilExpiry <= 2) {
+          status = "expiring soon";
+        } else {
+          status = "active";
+        }
       }
-    }
 
-    // 🔍 Search filter
-    const matchesSearch =
-      !query ||
-      `${item.firstName} ${item.lastName}`.toLowerCase().includes(query) ||
-      item.businessName?.toLowerCase().includes(query) ||
-      item.businessAddress?.toLowerCase().includes(query)
+      // 🔍 Search filter
+      const matchesSearch =
+        !query ||
+        `${item.firstName} ${item.lastName}`.toLowerCase().includes(query) ||
+        item.businessName?.toLowerCase().includes(query) ||
+        item.businessAddress?.toLowerCase().includes(query);
 
-    // 🎟️ Subscription filter
-    const matchesSubscription =
-      !filters.subscription ||
-      item.subscriptionTitle?.toLowerCase() ===
-        filters.subscription.toLowerCase();
+      // 🎟️ Subscription filter
+      const matchesSubscription =
+        !filters.subscription ||
+        item.subscriptionTitle?.toLowerCase() ===
+          filters.subscription.toLowerCase();
 
-    // 🧾 Permit/activation filter
-    const matchesPermit =
-      !filters.permitStatus ||
-      status.toLowerCase() === filters.permitStatus.toLowerCase();
+      // 🧾 Permit/activation filter
+      const matchesPermit =
+        !filters.permitStatus ||
+        status.toLowerCase() === filters.permitStatus.toLowerCase();
 
-    // 🏙️ City filter
-    const matchesCity =
-      !filters.city ||
-      item.city?.toLowerCase().includes(filters.city.toLowerCase());
+      // 🏙️ City filter
+      const matchesCity =
+        !filters.city ||
+        item.city?.toLowerCase().includes(filters.city.toLowerCase());
 
-    return (
-      matchesSearch &&
-      matchesSubscription &&
-      matchesPermit &&
-      matchesCity
-    );
-  });
-}, [search, data, filters]);
-
+      return (
+        matchesSearch && matchesSubscription && matchesPermit && matchesCity
+      );
+    });
+  }, [search, data, filters]);
 
   // ✅ Fetch vendor data
   useEffect(() => {
@@ -119,12 +117,16 @@ const Page = () => {
         </div>
 
         {/* Add Vendor */}
-        <div className="w-full sm:w-auto flex justify-end">
-          <Button
-            text="Add Vendor"
-            onClick={() => setShowAddVendorModal(true)}
-          />
-        </div>
+        {isViewOnly ? null : (
+          <div>
+            <div className="w-full sm:w-auto flex justify-end">
+              <Button
+                text="Add Vendor"
+                onClick={() => setShowAddVendorModal(true)}
+              />
+            </div>
+          </div>
+        )}
       </motion.div>
 
       {/* Table Section */}

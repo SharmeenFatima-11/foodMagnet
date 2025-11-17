@@ -1,32 +1,75 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { X } from "lucide-react";
 import SquareButton from "../../button/squareButton";
 import CancelButton from "../../button/whiteSquareButton";
+import { DeleteUsers } from "../../../lib/api/userManagement/userApis";
+import Swal from "sweetalert2";
 
 interface DeleteUserCardProps {
-  showModel: boolean;
   setModel: (value: boolean) => void;
+  setIsAdded: React.Dispatch<React.SetStateAction<boolean>>;
   user?: {
+    id: string;
     name: string;
     email: string;
     date: string;
   } | null;
-  onDelete?: (userEmail: string) => void;
 }
 
 const DeleteUserCard: React.FC<DeleteUserCardProps> = ({
-  showModel,
   setModel,
   user,
-  onDelete,
+  setIsAdded,
 }) => {
+  const [added, setAdded] = useState(false);
+
   if (!user) return null;
 
   const handleDelete = () => {
-    console.log("in delete")
-    if (onDelete) onDelete(user.email);
+    console.log("in delete");
+
+    if (!user || !user.id) {
+      console.log("user in condition", user);
+      Swal.fire({
+        title: "Error!",
+        text: "User Id cannot be null",
+        icon: "error",
+        confirmButtonText: "OK",
+        confirmButtonColor: "#8B4DC5", // purple confirm button
+      });
+      return;
+    }
+    setAdded(true);
+
+    DeleteUsers(user.id.toString())
+      .then((data) => {
+        Swal.fire({
+          title: "Success!",
+          text: "User deleted successfully.",
+          icon: "success",
+          confirmButtonText: "OK",
+          confirmButtonColor: "#8B4DC5", // custom purple button
+        });
+        setModel(false);
+        setAdded(false);
+        setIsAdded((prev) => !prev);
+      })
+      .catch((error) => {
+        const errorMessage =
+          error.message || error.error || "Failed to delete user.";
+
+        Swal.fire({
+          title: "Error!",
+          text: errorMessage,
+          icon: "error",
+          confirmButtonText: "OK",
+          confirmButtonColor: "#8B4DC5", // purple confirm button
+        });
+        setAdded(false);
+      });
+
     setModel(false);
   };
 
@@ -52,8 +95,16 @@ const DeleteUserCard: React.FC<DeleteUserCardProps> = ({
         </p>
 
         <div className="flex justify-center gap-3">
-          <CancelButton text="Cancel" onClick={() => setModel(false)} />
-          <SquareButton text="Yes, Remove" onClick={handleDelete} />
+          <CancelButton
+            text="Cancel"
+            onClick={() => setModel(false)}
+            isTriggered={added}
+          />
+          <SquareButton
+            text="Yes, Remove"
+            onClick={handleDelete}
+            isTriggered={added}
+          />
         </div>
       </div>
     </motion.div>
