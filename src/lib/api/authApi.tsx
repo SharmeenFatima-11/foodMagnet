@@ -30,7 +30,7 @@ export const RefreshToken = async () => {
         refreshToken,
       });
       const newIdToken = data.idToken;
-      console.log("newIdToken", newIdToken)
+      console.log("newIdToken", newIdToken);
       // Update only idToken in localStorage
       const updatedUserData = {
         ...userData,
@@ -50,5 +50,49 @@ export const RefreshToken = async () => {
   } else {
     // No userData in storage, redirect to login
     router.push("/login");
+  }
+};
+
+export const ResetPassword = async (body: { email: string }) => {
+  try {
+    const { data } = await axiosInstance.post(
+      "/admin/users/sendPasswordReset",
+      body
+    );
+    return data;
+  } catch (error: any) {
+    const message =
+      error.response?.data?.message ||
+      error.response?.data?.error?.message ||
+      error.message ||
+      error.error ||
+      "Reset password failed. Please try again.";
+
+    console.log("Reset Password error:", message);
+    throw new Error(message);
+  }
+};
+
+export const ValidateResetPassword = async (body: {
+  userId: string;
+  resetCode: string;
+}) => {
+  try {
+    const { data } = await axiosInstance.post(
+      "/admin/users/validatePasswordReset",
+      body
+    );
+    localStorage.setItem("userData", JSON.stringify(data));
+    return data;
+  } catch (error: any) {
+    const message =
+      error.response?.data?.message ||
+      error.response?.data?.error?.message ||
+      error.message ||
+      error.error ||
+      "Reset password failed. Please try again.";
+
+    console.log("Reset Password error:", message);
+    throw new Error(message);
   }
 };

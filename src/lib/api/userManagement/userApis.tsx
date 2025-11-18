@@ -43,12 +43,7 @@ export const AddUsers = async (body: {
   }
 };
 
-export const UpdateUsers = async (body: {
-  firstName: string;
-  lastName: string;
-  email: string;
-  userId: string;
-}) => {
+export const UpdateUsers = async (body: any) => {
   try {
     let token = localStorage.getItem("userData");
     token = token ? JSON.parse(token).idToken : null;
@@ -71,9 +66,13 @@ export const DeleteUsers = async (userId: string) => {
   try {
     let token = localStorage.getItem("userData");
     token = token ? JSON.parse(token).idToken : null;
-    const { data } = await axiosInstance.put(`admin/users`,{userId}, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const { data } = await axiosInstance.put(
+      `admin/users`,
+      { userId },
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
     return data;
   } catch (error: any) {
     const message =
