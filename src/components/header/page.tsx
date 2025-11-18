@@ -176,6 +176,7 @@ const Header = () => {
                     className="flex items-center justify-start gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-all duration-200"
                     onClick={() => {
                       setOpen(false);
+                      localStorage.clear();
                       router.push("/login");
                     }}
                   >

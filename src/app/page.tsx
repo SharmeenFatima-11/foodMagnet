@@ -9,7 +9,8 @@ export default function Home() {
   useEffect(() => {
     // Check if userData exists in localStorage
     const userDataString = localStorage.getItem("userData");
-    if (userDataString) {
+    const rememberMe = localStorage.getItem("rememberMe");
+    if (userDataString && rememberMe) {
       // Optionally, you can parse and check refreshToken or idToken
       router.push("/vendor");
     } else {
@@ -18,8 +19,6 @@ export default function Home() {
   }, [router]);
 
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      
-    </div>
+    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20"></div>
   );
 }

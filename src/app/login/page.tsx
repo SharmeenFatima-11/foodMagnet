@@ -26,7 +26,8 @@ const Page = () => {
   useEffect(() => {
     // Check if userData exists in localStorage
     const userDataString = localStorage.getItem("userData");
-    if (userDataString) {
+    const rememberMe = localStorage.getItem("rememberMe");
+    if (userDataString && rememberMe) {
       // Optionally, you can parse and check refreshToken or idToken
       router.push("/vendor");
     } else {
@@ -74,6 +75,7 @@ const Page = () => {
       .then((data) => {
         console.log("Login successful:", data);
         if (rememberMe == true) {
+          localStorage.setItem("rememberMe", JSON.stringify(rememberMe));
         }
         localStorage.setItem("userData", JSON.stringify(data));
         router.push("/vendor");
