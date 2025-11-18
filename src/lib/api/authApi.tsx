@@ -1,4 +1,5 @@
 import axiosInstance from "./axiosInstance";
+import { useRouter } from "next/navigation";
 
 export const Login = async (user: { email: string; password: string }) => {
   try {
@@ -14,5 +15,40 @@ export const Login = async (user: { email: string; password: string }) => {
 
     console.log("Login error:", message);
     throw new Error(message);
+  }
+};
+
+export const RefreshToken = async () => {
+  const router = useRouter();
+  let userData: any = localStorage.getItem("userData");
+  if (userData) {
+    userData = JSON.parse(userData);
+    const refreshToken = userData.refreshToken;
+
+    try {
+      const { data } = await axiosInstance.post("/app/accounts/refresh-token", {
+        refreshToken,
+      });
+      const newIdToken = data.idToken;
+      console.log("newIdToken", newIdToken)
+      // Update only idToken in localStorage
+      const updatedUserData = {
+        ...userData,
+        idToken: newIdToken,
+      };
+
+      localStorage.setItem("userData", JSON.stringify(updatedUserData));
+
+      return data;
+    } catch (error: any) {
+      console.error("Refresh token error:", error.message);
+      localStorage.clear();
+      router.push("/login");
+      // Optionally, you can also throw again if needed
+      throw new Error("Session expired. Please login again.");
+    }
+  } else {
+    // No userData in storage, redirect to login
+    router.push("/login");
   }
 };

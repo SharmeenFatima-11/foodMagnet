@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import DonutLogo from "../../components/donutLogo/DonutLogo";
 import TextField from "../../components/textFields/textField";
 import PasswordField from "../../components/textFields/passwordField";
@@ -22,6 +22,17 @@ const Page = () => {
   const emailRef = useRef<HTMLInputElement | null>(null);
   const passwordRef = useRef<HTMLInputElement | null>(null);
   const buttonRef = useRef<HTMLButtonElement | null>(null);
+
+  useEffect(() => {
+    // Check if userData exists in localStorage
+    const userDataString = localStorage.getItem("userData");
+    if (userDataString) {
+      // Optionally, you can parse and check refreshToken or idToken
+      router.push("/vendor");
+    } else {
+      router.push("/login");
+    }
+  }, [router]);
 
   const handleEmailChange = (val: string) => {
     setEmail(val);
