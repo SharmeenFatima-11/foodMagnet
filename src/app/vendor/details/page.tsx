@@ -78,9 +78,9 @@ const Page = () => {
                     : "Not specified",
               },
               {
-                name: "Phone",
+                name: "Business Phone Number",
                 icon: <Phone size={18} />,
-                data: res.foodTruckData.phoneNumber,
+                data: res.foodTruckData.businessPhoneNumber,
               },
               {
                 name: "Dining Areas",

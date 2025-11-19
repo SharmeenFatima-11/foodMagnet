@@ -115,7 +115,6 @@ const VendorSideBar: React.FC<VendorSideBarProps> = ({ vendor }) => {
             <VendorSidebarCard
               heading="Owner’s Phone Number"
               value={
-                vendorDetails?.businessPhoneNumber ||
                 vendorDetails?.phoneNumber ||
                 "-"
               }
