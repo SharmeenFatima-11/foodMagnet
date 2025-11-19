@@ -4,14 +4,18 @@ import Sidebar from "../sidebar/page";
 import Header from "../header/page";
 import VendorLayout from "./vendorLayout";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { ViewOnlyContext } from "@/context/ViewOnlyContext";
 
-export default function ClientLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function ClientLayoutWrapper({ children }: { children: React.ReactNode }) {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ClientLayout>{children}</ClientLayout>
+    </Suspense>
+  );
+}
+
+function ClientLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [isViewOnly, setIsViewOnly] = useState(false);
 
