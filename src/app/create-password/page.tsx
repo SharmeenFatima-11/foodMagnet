@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, Suspense } from "react";
 import DonutLogo from "../../components/donutLogo/DonutLogo";
 import PasswordField from "../../components/textFields/passwordField";
 import Button from "../../components/button/button";
@@ -127,10 +127,9 @@ const Page = () => {
 
     ValidateResetPassword({ userId: id, resetCode: code })
       .then((data) => {
-        console.log("data", data)
+        console.log("data", data);
       })
       .catch((error) => {
-        
         const errormessage = error.message || "Api Failed";
         Swal.fire({
           title: "Error!",
@@ -143,52 +142,54 @@ const Page = () => {
   }, []);
 
   return (
-    <div className="w-full flex flex-col items-center bg-gray-50 p-6 md:p-10">
-      <div className="flex flex-col items-center text-center mt-16">
-        <DonutLogo />
-        <div className="flex flex-col items-center gap-y-2 mt-2">
-          <h3 className="text-2xl font-bold mb-2">Create A New Account</h3>
-          <p className="text-base font-normal leading-relaxed">
-            Set a secure password to protect <br /> your account.
-          </p>
+    <Suspense fallback={<div>Loading...</div>}>
+      <div className="w-full flex flex-col items-center bg-gray-50 p-6 md:p-10">
+        <div className="flex flex-col items-center text-center mt-16">
+          <DonutLogo />
+          <div className="flex flex-col items-center gap-y-2 mt-2">
+            <h3 className="text-2xl font-bold mb-2">Create A New Account</h3>
+            <p className="text-base font-normal leading-relaxed">
+              Set a secure password to protect <br /> your account.
+            </p>
+          </div>
         </div>
-      </div>
 
-      {/* Form */}
-      <div className="flex flex-col gap-y-4 w-full max-w-md mt-6">
-        <PasswordField
-          text="Create Password"
-          field={password}
-          setField={handlePasswordChange}
-          placeholder=""
-          type="password"
-          error={passwordError}
-          inputRef={passwordRef}
-          onKeyDown={(e) => handleKeyDown(e, confirmPasswordRef)}
-        />
-
-        <PasswordField
-          text="Confirm Password"
-          field={confirmPassword}
-          setField={handleConfirmPasswordChange}
-          placeholder=""
-          type="password"
-          error={confirmPasswordError}
-          inputRef={confirmPasswordRef}
-          onKeyDown={(e) => handleKeyDown(e, buttonRef)}
-        />
-
-        {apiError && <p className="text-red-500 text-sm">{apiError}</p>}
-
-        <div className="mt-6">
-          <Button
-            text="Update Password"
-            onClick={handleSubmit}
-            buttonRef={buttonRef}
+        {/* Form */}
+        <div className="flex flex-col gap-y-4 w-full max-w-md mt-6">
+          <PasswordField
+            text="Create Password"
+            field={password}
+            setField={handlePasswordChange}
+            placeholder=""
+            type="password"
+            error={passwordError}
+            inputRef={passwordRef}
+            onKeyDown={(e) => handleKeyDown(e, confirmPasswordRef)}
           />
+
+          <PasswordField
+            text="Confirm Password"
+            field={confirmPassword}
+            setField={handleConfirmPasswordChange}
+            placeholder=""
+            type="password"
+            error={confirmPasswordError}
+            inputRef={confirmPasswordRef}
+            onKeyDown={(e) => handleKeyDown(e, buttonRef)}
+          />
+
+          {apiError && <p className="text-red-500 text-sm">{apiError}</p>}
+
+          <div className="mt-6">
+            <Button
+              text="Update Password"
+              onClick={handleSubmit}
+              buttonRef={buttonRef}
+            />
+          </div>
         </div>
       </div>
-    </div>
+    </Suspense>
   );
 };
 

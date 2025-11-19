@@ -1,4 +1,5 @@
 import axios from "axios";
+import { RefreshToken } from "./authApi";
 
 const axiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
@@ -10,7 +11,11 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
-    console.log("API error:", error.response?.data || error.message);
+    const apiError =  error.response?.data || error.message
+    console.log("API error:", apiError);
+    if(apiError == "Network Error" ){
+      RefreshToken()
+    }
     return Promise.reject(error);
   }
 );

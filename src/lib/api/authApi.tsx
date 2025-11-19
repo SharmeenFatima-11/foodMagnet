@@ -19,39 +19,40 @@ export const Login = async (user: { email: string; password: string }) => {
 };
 
 export const RefreshToken = async () => {
-  const router = useRouter();
   let userData: any = localStorage.getItem("userData");
+
   if (userData) {
     userData = JSON.parse(userData);
     const refreshToken = userData.refreshToken;
 
     try {
-      const { data } = await axiosInstance.post("/app/accounts/refresh-token", {
+      const { data } = await axiosInstance.post("/token/accounts/refresh-token", {
         refreshToken,
       });
-      const newIdToken = data.idToken;
-      console.log("newIdToken", newIdToken);
-      // Update only idToken in localStorage
-      const updatedUserData = {
-        ...userData,
-        idToken: newIdToken,
-      };
 
-      localStorage.setItem("userData", JSON.stringify(updatedUserData));
+      const newIdToken = data.idToken;
+
+      localStorage.setItem(
+        "userData",
+        JSON.stringify({ ...userData, idToken: newIdToken })
+      );
 
       return data;
+
     } catch (error: any) {
       console.error("Refresh token error:", error.message);
       localStorage.clear();
-      router.push("/login");
-      // Optionally, you can also throw again if needed
+
+      // Redirect manually
+      window.location.href = "/login";
+
       throw new Error("Session expired. Please login again.");
     }
   } else {
-    // No userData in storage, redirect to login
-    router.push("/login");
+    window.location.href = "/login";
   }
 };
+
 
 export const ResetPassword = async (body: { email: string }) => {
   try {
@@ -82,7 +83,7 @@ export const ValidateResetPassword = async (body: {
       "/admin/users/validatePasswordReset",
       body
     );
-    
+
     localStorage.setItem("userData", JSON.stringify(data));
     return data;
   } catch (error: any) {
