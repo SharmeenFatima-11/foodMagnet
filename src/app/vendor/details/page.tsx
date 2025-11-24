@@ -63,6 +63,7 @@ const Page = () => {
                 icon: <MapPin size={18} />,
                 data: res.foodTruckData.location,
               }, 
+              
               {
                 name: "Business Hours",
                 icon: <Clock size={18} />,
