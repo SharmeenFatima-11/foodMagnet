@@ -5,16 +5,11 @@ import VendorHeader from "../header/vendorHeader";
 import { useRouter } from "next/navigation";
 import { ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
+import { GetVendorDetails } from "../../lib/api/vendor/vendorApi";
 
 interface Vendor {
-  id: number;
-  firstName: string;
-  lastName: string;
+  id: string;
   businessName: string;
-  activeStatus: boolean;
-  businessAddress: string;
-  subscriptionTitle: string;
-  permitExpiration: string;
 }
 
 export default function ClientLayout({
@@ -27,6 +22,7 @@ export default function ClientLayout({
 
 function LayoutContent({ children }: { children: React.ReactNode }) {
   const [vendor, setVendor] = useState<Vendor | null>(null);
+  const [businessName, setBusinessName] = useState("");
   const router = useRouter();
 
   useEffect(() => {
@@ -36,10 +32,27 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
+  useEffect(() => {
+    if (vendor?.businessName) {
+      setBusinessName(vendor?.businessName);
+    } else {
+      if (vendor?.id != null) {
+        GetVendorDetails(vendor.id)
+          .then((res) => {
+            console.log("Data fetched successfully:", res);
+            setBusinessName(res.foodTruckData.businessName);
+          })
+          .catch((error) => {
+            console.error("Error fetching vendor details:", error.message);
+          });
+      }
+    }
+  }, [vendor]);
+
   return (
     <div className="flex flex-col md:flex-row bg-gray-50 text-[#000000]">
       {/* 🟣 HEADER — visible only on small screens */}
-      <div className="block md:hidden bg-white w-full border-b border-gray-100 shadow-md">
+      <div className="block md:hidden w-full">
         <div className="p-4">
           <VendorHeader />
         </div>
@@ -57,7 +70,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
             </p>
             <ChevronRight className="w-4 h-4 text-gray-400" />
             <p className="text-[#8B4DC5] text-md font-medium truncate max-w-[200px]">
-              {vendor?.businessName}
+              {businessName}
             </p>
           </div>
 
@@ -67,7 +80,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
         {/* 🟣 MAIN CONTENT */}
         <div className="flex-1 flex flex-col">
           {/* Header for md+ */}
-          <div className="hidden md:block p-4 bg-white border-b border-gray-100 shadow-sm">
+          <div className="hidden md:block p-4">
             <VendorHeader />
           </div>
 

@@ -44,6 +44,12 @@ const VendorSideBar: React.FC<VendorSideBarProps> = ({ vendor }) => {
         .then((res) => {
           console.log("Data fetched successfully:", res);
           setVendorDetails(res.foodTruckData);
+          sessionStorage.setItem(
+            "selectedVendor",
+            JSON.stringify({ id: vendor.id,
+              businessName: res.foodTruckData.businessName
+             })
+          );
         })
         .catch((error) => {
           console.error("Error fetching vendor details:", error.message);
