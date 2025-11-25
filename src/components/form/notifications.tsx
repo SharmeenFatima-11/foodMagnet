@@ -100,7 +100,7 @@ const AddVendorForm: React.FC<AddVendorFormProps> = ({
           <div className="flex-grow overflow-y-auto p-6">
             {notifications.map((notification, index) => (
               <div key={index}>
-                <Card notification={notification} />
+                <Card notification={notification} setModel={setModel} />
               </div>
             ))}
           </div>

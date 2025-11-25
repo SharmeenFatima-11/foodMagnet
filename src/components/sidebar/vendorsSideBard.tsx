@@ -6,17 +6,17 @@ import { motion } from "framer-motion";
 
 interface Vendor {
   id: any;
-  firstName: string;
-  lastName: string;
-  businessName: string;
-  activeStatus: boolean;
-  businessAddress: string;
-  subscriptionTitle: string;
-  permitExpiration: string;
 }
 
 interface VendorDetails {
   id: any;
+  firstName: string;
+  lastName: string;
+  businessName: string;
+  activeStatus: boolean;
+  location: string;
+  subscriptionTitle: string;
+  permitExpiration: string;
   email: string;
   phoneNumber: string;
   description: string;
@@ -34,7 +34,9 @@ interface VendorSideBarProps {
 }
 
 const VendorSideBar: React.FC<VendorSideBarProps> = ({ vendor }) => {
-  const [vendorDetails, setVendorDetails] = useState<VendorDetails | null>(null);
+  const [vendorDetails, setVendorDetails] = useState<VendorDetails | null>(
+    null
+  );
 
   useEffect(() => {
     if (vendor?.id != null) {
@@ -74,19 +76,19 @@ const VendorSideBar: React.FC<VendorSideBarProps> = ({ vendor }) => {
       exit={{ opacity: 0, x: -20 }}
       transition={{ duration: 0.4, ease: "easeInOut" }}
     >
-      {vendor ? (
+      {vendorDetails ? (
         <div className="space-y-2 text-sm">
           {/* Status and Subscription */}
           <div className="flex justify-between items-center flex-wrap gap-2">
             <div
               className={`rounded-full px-3 py-1 text-xs font-medium ${
-                vendor.activeStatus ? "bg-green-600" : "bg-gray-400"
+                vendorDetails?.activeStatus ? "bg-green-600" : "bg-gray-400"
               } text-white`}
             >
-              {vendor.activeStatus ? "Published" : "Unpublished"}
+              {vendorDetails?.activeStatus ? "Published" : "Unpublished"}
             </div>
             <div className="bg-[#343A40] text-white rounded-full px-4 py-1 text-xs font-medium">
-              {vendor.subscriptionTitle}
+              {vendorDetails?.subscriptionTitle}
             </div>
           </div>
 
@@ -103,21 +105,26 @@ const VendorSideBar: React.FC<VendorSideBarProps> = ({ vendor }) => {
                 className="w-28 h-28 sm:w-32 sm:h-32 rounded-full object-cover border border-gray-200"
               />
             </div>
-            <p className="text-lg font-bold text-[#3C096C]">{vendor.businessName}</p>
+            <p className="text-lg font-bold text-[#3C096C]">
+              {vendorDetails?.businessName || "-"}
+            </p>
           </div>
 
           {/* Vendor Details */}
           <div className="space-y-2">
             <VendorSidebarCard
               heading="Owner’s Name"
-              value={`${vendor.firstName} ${vendor.lastName}`}
+              value={
+                vendorDetails
+                  ? `${vendorDetails.firstName ?? ""} ${
+                      vendorDetails.lastName ?? ""
+                    }`.trim() || " -"
+                  : " -"
+              }
             />
             <VendorSidebarCard
               heading="Owner’s Phone Number"
-              value={
-                vendorDetails?.phoneNumber ||
-                "-"
-              }
+              value={vendorDetails?.phoneNumber || "-"}
             />
             <VendorSidebarCard
               heading="Email"
@@ -125,24 +132,27 @@ const VendorSideBar: React.FC<VendorSideBarProps> = ({ vendor }) => {
             />
             <VendorSidebarCard
               heading="Business Address"
-              value={vendor.businessAddress || "-"}
+              value={vendorDetails?.location || "-"}
             />
 
             {/* Business Hours */}
-            {vendorDetails?.businessHours && vendorDetails.businessHours.length > 0 && (
-              <div className="flex flex-col gap-y-2 py-4">
-                <span className="font-bold text-[#3C096C]">Business Hours</span>
-                {vendorDetails.businessHours.map((val, ind) => (
-                  <div
-                    key={ind}
-                    className="flex items-center justify-between text-gray-700"
-                  >
-                    <span>{val.day}</span>
-                    <span className="font-medium">{val.hours}</span>
-                  </div>
-                ))}
-              </div>
-            )}
+            {vendorDetails?.businessHours &&
+              vendorDetails.businessHours.length > 0 && (
+                <div className="flex flex-col gap-y-2 py-4">
+                  <span className="font-bold text-[#3C096C]">
+                    Business Hours
+                  </span>
+                  {vendorDetails.businessHours.map((val, ind) => (
+                    <div
+                      key={ind}
+                      className="flex items-center justify-between text-gray-700"
+                    >
+                      <span>{val.day}</span>
+                      <span className="font-medium">{val.hours}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
           </div>
         </div>
       ) : (

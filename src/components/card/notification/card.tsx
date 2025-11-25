@@ -1,8 +1,14 @@
 import React from "react";
 import { AlertTriangle, Bell, Clock } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
+import { useRouter } from "next/navigation";
 
-type MessageType = "alert" | "danger" | "expiring_soon" | "permit_expired" | "shipping";
+type MessageType =
+  | "alert"
+  | "danger"
+  | "expiring_soon"
+  | "permit_expired"
+  | "shipping";
 
 interface Notification {
   title: string;
@@ -10,10 +16,14 @@ interface Notification {
   createdAt: Date | string;
   messageType: MessageType; // <-- narrow type here
   read: boolean;
+  userId: string;
+
 }
 
-const Card = ({ notification }: { notification: Notification }) => {
-  const { title, messageContent, createdAt, messageType, read } = notification;
+const Card = ({ notification, setModel }: { notification: Notification , setModel: (value: boolean) => void}) => {
+  const { title, messageContent, createdAt, messageType, read, userId } =
+    notification;
+  const router = useRouter();
 
   // Format date like "3 days ago"
   const formattedDate = createdAt
@@ -50,7 +60,21 @@ const Card = ({ notification }: { notification: Notification }) => {
   const { icon } = typeConfig[messageType];
 
   return (
-    <div className={`flex border rounded-md my-3 p-3`}>
+    <div
+      className={`flex border rounded-md my-3 p-3 ${
+        title == "Review Profile" ? "cursor-pointer" : ""
+      }`}
+      onClick={() => {
+        if (title == "Review Profile") {
+          router.push(`/vendor/account`);
+          sessionStorage.setItem(
+            "selectedVendor",
+            JSON.stringify({ id: userId })
+          );
+          setModel(false)
+        }
+      }}
+    >
       {/* Left icon */}
       <div>{icon}</div>
 

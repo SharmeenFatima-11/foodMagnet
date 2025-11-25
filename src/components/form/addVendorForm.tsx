@@ -49,7 +49,7 @@ const AddVendorForm: React.FC<AddVendorFormProps> = ({
   const [movementTypeOptions, setMovementTypeOptions] = useState([
     "event",
     "travel",
-    "public",
+    "stationary",
   ]);
   const [buissnessAddress, setBuissnessAddress] = useState("");
   const [buissnessAddressError, setBuissnessAddressError] = useState("");
@@ -69,12 +69,12 @@ const AddVendorForm: React.FC<AddVendorFormProps> = ({
   const [distanceTravelError, setDistanceTravelError] = useState("");
 
   const [distanceTravelOptions, setDistanceTravelOptions] = useState([
-    "1 km",
-    "2 km",
-    "3 km",
-    "4 km",
-    "5 km",
-    "6 km",
+    "5 miles",
+    "10 miles",
+    "20 miles",
+    "30 miles",
+    "40 miles",
+    "50 miles",
   ]);
   const [subscriptionType, setSubscriptionType] = useState("");
   const [subscriptionError, setSubscriptionError] = useState("");
@@ -287,7 +287,7 @@ const AddVendorForm: React.FC<AddVendorFormProps> = ({
       businessName: buissnessName,
       businessDescription: buissnessDescription,
       foodCategoryId: cuisine[0],
-      movementType: movementType[0],
+      movementType: movementType[0] == 'stationary'? 'public': movementType[0],
       businessAddress: buissnessAddress,
       city: city[0],
       state: state[0],

@@ -113,7 +113,7 @@ const TextField: React.FC<TextFieldProps> = ({
             onClick={() => setShowPassword(!showPassword)}
             className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-[#F3E8FF] hover:bg-[#E2D0FF] text-[#3C096C] shadow-sm hover:shadow-md transition-all duration-300"
           >
-            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            {showPassword ? <Eye size={18} /> : <EyeOff size={18} />}
           </button>
         )}
       </div>
