@@ -26,9 +26,12 @@ export const RefreshToken = async () => {
     const refreshToken = userData.refreshToken;
 
     try {
-      const { data } = await axiosInstance.post("/token/accounts/refresh-token", {
-        refreshToken,
-      });
+      const { data } = await axiosInstance.post(
+        "/token/accounts/refresh-token",
+        {
+          refreshToken,
+        }
+      );
 
       const newIdToken = data.idToken;
 
@@ -38,10 +41,14 @@ export const RefreshToken = async () => {
       );
 
       return data;
-
     } catch (error: any) {
       console.error("Refresh token error:", error.message);
+      const credentials = localStorage.getItem("credentials");
+
       localStorage.clear();
+      if (credentials) {
+        localStorage.setItem("credentials", credentials);
+      }
 
       // Redirect manually
       window.location.href = "/login";
@@ -52,7 +59,6 @@ export const RefreshToken = async () => {
     window.location.href = "/login";
   }
 };
-
 
 export const ResetPassword = async (body: { email: string }) => {
   try {

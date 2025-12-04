@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { Pencil, Trash2 } from "lucide-react";
+import { PencilIcon, TrashIcon } from "@heroicons/react/24/solid";
 import { useViewOnly } from "@/context/ViewOnlyContext";
 
 interface User {
@@ -56,14 +56,14 @@ const AdminUserCard: React.FC<AdminUserCardProps> = ({
                     className="p-2 hover:bg-gray-100 rounded-lg transition"
                     aria-label="Edit user"
                   >
-                    <Pencil className="w-4 h-4 text-gray-700 cursor-pointer" />
+                    <PencilIcon className="w-4 h-4 text-black cursor-pointer" />
                   </button>
                   <button
                     onClick={() => onDelete(user)}
                     className="p-2 hover:bg-gray-100 rounded-lg transition"
                     aria-label="Delete user"
                   >
-                    <Trash2 className="w-4 h-4 text-gray-700 cursor-pointer" />
+                    <TrashIcon className="w-4 h-4 text-black cursor-pointer" />
                   </button>
                 </div>
               </div>
@@ -79,14 +79,14 @@ const AdminUserCard: React.FC<AdminUserCardProps> = ({
                   className="p-1 hover:bg-gray-100 rounded-lg transition"
                   aria-label="Edit user"
                 >
-                  <Pencil className="w-4 h-4 text-gray-700 cursor-pointer" />
+                  <PencilIcon className="w-4 h-4 text-black cursor-pointer" />
                 </button>
                 <button
                   onClick={() => onDelete(user)}
                   className="p-1 hover:bg-gray-100 rounded-lg transition"
                   aria-label="Delete user"
                 >
-                  <Trash2 className="w-4 h-4 text-gray-700 cursor-pointer" />
+                 <TrashIcon className="w-4 h-4 text-black cursor-pointer" />
                 </button>
               </div>
              )}

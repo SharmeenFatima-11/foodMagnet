@@ -26,12 +26,23 @@ const Page = () => {
   useEffect(() => {
     // Check if userData exists in localStorage
     const userDataString = localStorage.getItem("userData");
-    const rememberMe = localStorage.getItem("rememberMe");
-    if (userDataString && rememberMe) {
-      // Optionally, you can parse and check refreshToken or idToken
+    if (userDataString) {
       router.push("/vendor");
     } else {
       router.push("/login");
+    }
+
+    // Load saved credentials
+    const credentialsString = localStorage.getItem("credentials");
+    if (credentialsString) {
+      const credentials = JSON.parse(credentialsString); // parse string back to object
+      console.log("credentials", credentials);
+      console.log("type of credentialsString:", typeof credentialsString); // string
+      console.log("type of credentials:", typeof credentials); // object
+      console.log("credentials.email:", credentials.email); // real email
+
+      setEmail(credentials.email || "");
+      setPassword(credentials.password || "");
     }
   }, [router]);
 
@@ -74,9 +85,16 @@ const Page = () => {
     Login({ email, password })
       .then((data) => {
         console.log("Login successful:", data);
-        if (rememberMe == true) {
-          localStorage.setItem("rememberMe", JSON.stringify(rememberMe));
+        console.log("rememberMe", rememberMe);
+        if (rememberMe) {
+          localStorage.setItem(
+            "credentials",
+            JSON.stringify({ email, password })
+          );
+        } else {
+          localStorage.removeItem("credentials");
         }
+
         localStorage.setItem("userData", JSON.stringify(data));
         router.push("/vendor");
       })

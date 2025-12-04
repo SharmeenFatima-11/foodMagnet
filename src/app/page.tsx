@@ -9,8 +9,7 @@ export default function Home() {
   useEffect(() => {
     // Check if userData exists in localStorage
     const userDataString = localStorage.getItem("userData");
-    const rememberMe = localStorage.getItem("rememberMe");
-    if (userDataString && rememberMe) {
+    if (userDataString) {
       // Optionally, you can parse and check refreshToken or idToken
       router.push("/vendor");
     } else {

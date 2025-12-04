@@ -13,7 +13,7 @@ const Header = () => {
   const [name, setName] = useState("John Doe");
   const [image, setImage] = useState("https://i.pravatar.cc/100");
   const [showNotificationModal, setShowNotificationModal] = useState(false);
-  
+
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Close dropdown on outside click
@@ -176,7 +176,12 @@ const Header = () => {
                     className="flex items-center justify-start gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-all duration-200"
                     onClick={() => {
                       setOpen(false);
+                      const credentials = localStorage.getItem("credentials");
+
                       localStorage.clear();
+                      if (credentials) {
+                        localStorage.setItem("credentials", credentials);
+                      }
                       router.push("/login");
                     }}
                   >
@@ -189,7 +194,7 @@ const Header = () => {
         </div>
       </div>
 
-       {/* 🧩 show Notification Modal */}
+      {/* 🧩 show Notification Modal */}
       <AnimatePresence>
         {showNotificationModal && (
           <>

@@ -17,7 +17,6 @@ const Page = () => {
   const [password, setPassword] = useState<string>("");
   const [passwordError, setPasswordError] = useState<string>("");
   const [apiError, setApiError] = useState<string>("");
-  const [rememberMe, setRememberMe] = useState(false);
 
   const confirmPasswordRef = useRef<HTMLInputElement | null>(null);
   const passwordRef = useRef<HTMLInputElement | null>(null);
