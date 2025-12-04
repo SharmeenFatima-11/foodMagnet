@@ -140,7 +140,7 @@ const Page = () => {
 
         {apiError && <p className="text-red-500 text-sm">{apiError}</p>}
 
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mt-2">
+        <div className="flex flex-row justify-between items-start sm:items-center mt-2">
           <div className="flex items-center space-x-2 mb-2 sm:mb-0">
             <input
               id="rememberMe"
