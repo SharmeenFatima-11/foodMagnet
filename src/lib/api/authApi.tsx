@@ -71,11 +71,12 @@ export const ResetPassword = async (body: { email: string }) => {
     const message =
       error.response?.data?.message ||
       error.response?.data?.error?.message ||
+      error.response?.data?.error ||
       error.message ||
       error.error ||
       "Reset password failed. Please try again.";
 
-    console.log("Reset Password error:", message);
+    console.log("Reset Password error:", message, error);
     throw new Error(message);
   }
 };

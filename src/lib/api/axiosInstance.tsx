@@ -12,7 +12,7 @@ axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
     const apiError =  error.response?.data || error.message
-    console.log("API error:", apiError);
+    console.log("apiError", apiError)
     if(apiError == "Network Error" ){
       RefreshToken()
     }

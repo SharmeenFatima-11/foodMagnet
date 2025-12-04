@@ -42,7 +42,9 @@ const Page = () => {
         router.push("/forget-password-confirmation");
       })
       .catch((error) => {
-        setApiError(error.message ? error.message : "Api Failed");
+        console.log("error", error)
+        setEmailError(error.message ? error.message : "Api Failed")
+        // setApiError(error.message ? error.message : "Api Failed");
       });
   };
 
