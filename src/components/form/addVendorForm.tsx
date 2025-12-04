@@ -47,9 +47,9 @@ const AddVendorForm: React.FC<AddVendorFormProps> = ({
   const [movementTypeError, setMovementTypeError] = useState("");
 
   const [movementTypeOptions, setMovementTypeOptions] = useState([
-    "event",
-    "travel",
-    "stationary",
+    "Events Only",
+    "Travelling",
+    "Stationary Location",
   ]);
   const [buissnessAddress, setBuissnessAddress] = useState("");
   const [buissnessAddressError, setBuissnessAddressError] = useState("");
@@ -70,11 +70,10 @@ const AddVendorForm: React.FC<AddVendorFormProps> = ({
 
   const [distanceTravelOptions, setDistanceTravelOptions] = useState([
     "5 miles",
-    "10 miles",
     "20 miles",
     "30 miles",
-    "40 miles",
     "50 miles",
+    "100 miles",
   ]);
   const [subscriptionType, setSubscriptionType] = useState("");
   const [subscriptionError, setSubscriptionError] = useState("");
@@ -287,7 +286,14 @@ const AddVendorForm: React.FC<AddVendorFormProps> = ({
       businessName: buissnessName,
       businessDescription: buissnessDescription,
       foodCategoryId: cuisine[0],
-      movementType: movementType[0] == 'stationary'? 'public': movementType[0],
+      movementType:
+        movementType[0] == "Stationary Location"
+          ? "public"
+          : movementType[0] == "Travelling"
+          ? "travel"
+          : movementType[0] == "Events Only"
+          ? "event"
+          : "",
       businessAddress: buissnessAddress,
       city: city[0],
       state: state[0],
@@ -548,7 +554,11 @@ const AddVendorForm: React.FC<AddVendorFormProps> = ({
       <div className="p-6 border-t border-gray-200 flex justify-end gap-x-3  gap-x-3">
         <div className="flex justify-end gap-x-3 ">
           <div>
-            <WhiteSquareButton text="Cancel" isTriggered={formSubmitted} onClick={handleCancel} />
+            <WhiteSquareButton
+              text="Cancel"
+              isTriggered={formSubmitted}
+              onClick={handleCancel}
+            />
           </div>
           <div className="flex-1">
             <SquareButton
