@@ -6,6 +6,7 @@ import TextField from "../textFields/textField";
 import DropDown from "../dropdown/dropDownWithOneSelection";
 import SquareButton from "../button/squareButton";
 import WhiteSquareButton from "../button/whiteSquareButton";
+import { ResetPassword } from "../../lib/api/authApi";
 import Swal from "sweetalert2";
 import { AddUsers } from "../../lib/api/userManagement/userApis";
 
@@ -124,6 +125,7 @@ const UserForm: React.FC<UserFormProps> = ({
     };
     AddUsers(userData)
       .then((data) => {
+        ResetPassword({ email })
         Swal.fire({
           title: "Success!",
           text: "User added successfully.",
