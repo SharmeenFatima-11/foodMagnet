@@ -9,7 +9,6 @@ import {
   Phone,
   UtensilsCrossed,
   CreditCard,
-  Building,
   PlugZap,
   CalendarDays,
 } from "lucide-react";
@@ -62,8 +61,8 @@ const Page = () => {
                 name: "Location",
                 icon: <MapPin size={18} />,
                 data: res.foodTruckData.location,
-              }, 
-              
+              },
+
               {
                 name: "Business Hours",
                 icon: <Clock size={18} />,
@@ -85,7 +84,14 @@ const Page = () => {
               },
               {
                 name: "Dining Areas",
-                icon: <Building size={18} />,
+                // icon: <Building size={18} />,
+                icon: (
+                  <img
+                    src="/dining.svg" // replace with your image path
+                    alt="Dining Table"
+                    className="w-5 h-5" // matches size={18}
+                  />
+                ),
                 data: res.foodTruckData.hasSeating
                   ? "There is outdoor seating available"
                   : "No seating available",
@@ -121,15 +127,14 @@ const Page = () => {
   // ✅ Return UI conditionally inside JSX, not before hooks
   return (
     <motion.div
-  className="flex flex-col gap-6 my-6 overflow-y-auto scroll-smooth pr-2"
-  initial={{ opacity: 0, y: 20 }}
-  animate={{ opacity: 1, y: 0 }}
-  transition={{ duration: 0.6, ease: "easeOut" }}
-  style={{
-    height: "calc(100vh - 200px)",
-  }}
->
-
+      className="flex flex-col gap-6 my-6 overflow-y-auto scroll-smooth pr-2"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, ease: "easeOut" }}
+      style={{
+        height: "calc(100vh - 200px)",
+      }}
+    >
       {loading ? (
         <div className="flex justify-center items-center h-[70vh] text-gray-600 text-lg animate-pulse">
           Loading vendor data...

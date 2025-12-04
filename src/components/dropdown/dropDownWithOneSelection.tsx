@@ -167,24 +167,35 @@ const DropDown: React.FC<DropDownProps> = ({
       </div>
 
       {field.length > 0 && (
-        <div className="flex flex-wrap gap-2 mt-3">
-          {field.map((item, idx) => (
-            <div
-              key={idx}
-              className="flex items-center gap-2 bg-[#F3E8FF] text-[#3C096C] px-3 py-1.5 rounded-full shadow-sm border border-[#E0C6FF] hover:bg-[#EDE0FF] transition-all duration-200"
-            >
-              <span className="text-sm font-medium">{item}</span>
-              <button
-                type="button"
-                onClick={() => handleRemove(item)}
-                className="text-[#3C096C] hover:text-[#5A189A] focus:outline-none transition-transform hover:scale-110"
-              >
-                <X size={14} />
-              </button>
-            </div>
-          ))}
+  <div className="flex flex-wrap gap-2 mt-3">
+    {field.map((item, idx) => {
+      // find the corresponding option
+      const selectedOption = options.find((o) =>
+        typeof o === "string" ? o === item : String(o.id ?? o.name) === item
+      );
+      const displayName =
+        typeof selectedOption === "string"
+          ? selectedOption
+          : selectedOption?.name || item; // fallback to item if name missing
+
+      return (
+        <div
+          key={idx}
+          className="flex items-center gap-2 bg-[#F3E8FF] text-[#3C096C] px-3 py-1.5 rounded-full shadow-sm border border-[#E0C6FF] hover:bg-[#EDE0FF] transition-all duration-200"
+        >
+          <span className="text-sm font-medium">{displayName}</span>
+          <button
+            type="button"
+            onClick={() => handleRemove(item)}
+            className="text-[#3C096C] hover:text-[#5A189A] focus:outline-none transition-transform hover:scale-110"
+          >
+            <X size={14} />
+          </button>
         </div>
-      )}
+      );
+    })}
+  </div>
+)}
 
       {error && (
         <p className="text-red-500 text-sm mt-2 ml-1 animate-fadeIn">{error}</p>
