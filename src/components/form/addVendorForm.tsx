@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { XMarkIcon } from "@heroicons/react/24/solid";
 import TextField from "../textFields/textField";
+import TextFieldWithMapbox from "../textFields/textFieldWithMapbox"
 import PhoneTextField from "../textFields/phoneNumber";
 import TextBox from "../textFields/textBox";
 import DropDownWithOneOption from "../dropdown/dropDownWithOneSelection";
@@ -475,7 +476,7 @@ const AddVendorForm: React.FC<AddVendorFormProps> = ({
           onKeyDown={(e) => handleKeyDown(e, businessAddressRef)}
         />
 
-        <TextField
+        <TextFieldWithMapbox
           text="Business Address"
           field={buissnessAddress}
           setField={handleBuissnessAddressChange}

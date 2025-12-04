@@ -36,7 +36,7 @@ const SearchField: React.FC<SearchFieldProps> = ({
 
       {/* Search icon inside input */}
       <span className="absolute right-3 flex items-center justify-center">
-        <Search size={18} strokeWidth={2} className="text-gray-400" />
+        <Search size={18} strokeWidth={2} className="text-black" />
       </span>
     </div>
   );
