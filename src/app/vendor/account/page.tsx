@@ -49,7 +49,7 @@ const Page = () => {
   }
 
   return (
-    <div className="h-full overflow-y-auto p-4 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100"
+    <div className="h-full overflow-y-auto p-4 pt-2 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100"
     style={{
               height: "calc(100vh - 165px)",
             }}>

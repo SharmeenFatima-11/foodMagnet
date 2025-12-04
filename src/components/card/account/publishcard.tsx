@@ -165,7 +165,7 @@ const VendorSidebarCard: React.FC<VendorSidebarCardProps> = ({
   };
 
   return (
-    <div className="flex flex-col justify-center gap-y-2 py-4 h-auto bg-white rounded-md p-6 py-8 border border-gray-300 rounded-xl shadow-lg my-6">
+    <div className="flex flex-col justify-center gap-y-2 py-4 h-auto bg-white rounded-md p-6 border border-gray-300 rounded-xl shadow-lg mb-6">
       {isPublished && isPublished == true ? (
         <div className="flex flex-wrap sm:flex-nowrap items-center justify-between gap-4">
           <div className="flex flex-col w-full sm:w-1/2 gap-y-2">
