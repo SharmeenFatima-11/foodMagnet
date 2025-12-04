@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useMemo, useEffect } from "react";
-import SearchField from "../../textFields/squareSearchField";
+import TrackingInfoField    from "../../textFields/trackingInfo";
 import Swal from "sweetalert2";
 import { Copy, ChevronDown, ChevronUp } from "lucide-react";
 import { GetActivateDevice } from "../../../lib/api/vendor/accountApis";
@@ -68,10 +68,12 @@ const TrackingInfoCards: React.FC<VendorSidebarCardProps> = ({
   }, [search, trackingData]);
 
   return (
-    <div className="flex gap-x-2 bg-white rounded-2xl shadow-lg p-6 my-6 transition-all">
+    <div className=" bg-white rounded-2xl shadow-lg p-6 my-6 transition-all">
       {/* LEFT SIDE — Tracking Numbers */}
+      <span className="font-semibold text-gray-700">Tracking Information</span>
+      <div className="flex gap-x-2 mt-2">
       <div className="flex-[4] border-r border-gray-200 pr-4">
-        <SearchField value={search} setValue={setSearch} />
+        <TrackingInfoField    value={search} setValue={setSearch} />
 
         <div className="flex flex-col gap-y-3 mt-6">
           <span className="font-semibold text-gray-700">Tracking Log</span>
@@ -154,6 +156,7 @@ const TrackingInfoCards: React.FC<VendorSidebarCardProps> = ({
             )}
           </div>
         </div>
+      </div>
       </div>
     </div>
   );

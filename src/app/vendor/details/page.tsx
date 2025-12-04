@@ -121,14 +121,15 @@ const Page = () => {
   // ✅ Return UI conditionally inside JSX, not before hooks
   return (
     <motion.div
-      className="flex flex-col gap-6 my-6"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, ease: "easeOut" }}
-      style={{
-        height: "calc(100vh - 200px)",
-      }}
-    >
+  className="flex flex-col gap-6 my-6 overflow-y-auto scroll-smooth pr-2"
+  initial={{ opacity: 0, y: 20 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.6, ease: "easeOut" }}
+  style={{
+    height: "calc(100vh - 200px)",
+  }}
+>
+
       {loading ? (
         <div className="flex justify-center items-center h-[70vh] text-gray-600 text-lg animate-pulse">
           Loading vendor data...
@@ -148,7 +149,7 @@ const Page = () => {
           </motion.div>
 
           <motion.div
-            className="bg-white rounded-2xl shadow-md border border-gray-100 p-6 md:p-8 max-h-[510px] overflow-y-auto scroll-smooth"
+            className="bg-white rounded-2xl shadow-md border border-gray-100 p-6 md:p-8"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4 }}
