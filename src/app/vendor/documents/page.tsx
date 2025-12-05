@@ -50,7 +50,6 @@ const Page = () => {
 
           {/* Verified Badge Animation */}
           <AnimatePresence>
-            {enabled && (
               <motion.img
                 src="/verifiedBadge.svg"
                 initial={{ opacity: 0, scale: 0.5 }}
@@ -58,7 +57,6 @@ const Page = () => {
                 exit={{ opacity: 0, scale: 0.5 }}
                 transition={{ duration: 0.3 }}
               />
-            )}
           </AnimatePresence>
         </div>
       </div>
