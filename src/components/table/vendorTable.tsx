@@ -92,6 +92,8 @@ const VendorTable: React.FC<VendorTableProps> = ({ data }) => {
                   className="px-3 sm:px-4 py-3 cursor-pointer select-none text-[#343A40] hover:text-gray-700 whitespace-nowrap"
                   onClick={() => handleSort(col.key)}
                 >
+
+                  
                   <div className="flex justify-start items-center gap-1 text-black">
                     <span>{col.label}</span>
                     <ChevronsUpDown
