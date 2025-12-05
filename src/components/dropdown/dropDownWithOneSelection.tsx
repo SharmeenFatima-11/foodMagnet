@@ -77,7 +77,7 @@ const DropDown: React.FC<DropDownProps> = ({
   return (
     <div className="w-full flex flex-col" ref={dropdownRef}>
       {text && (
-        <label className="text-md font-semibold mb-2 ml-2 tracking-wide text-gray-700">
+        <label className="text-md font-semibold mb-2 ml-2 tracking-wide text-black">
           {text}
         </label>
       )}
