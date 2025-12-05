@@ -207,7 +207,7 @@ const UserForm: React.FC<UserFormProps> = ({
         />
 
         <TextField
-          text="Email"
+          text="Email Address"
           field={email}
           setField={handleEmailChange}
           placeholder="john.doe@example.com"

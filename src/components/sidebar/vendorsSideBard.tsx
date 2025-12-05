@@ -139,7 +139,7 @@ const VendorSideBar: React.FC<VendorSideBarProps> = ({ vendor }) => {
             {vendorDetails?.businessHours &&
               vendorDetails.businessHours.length > 0 && (
                 <div className="flex flex-col gap-y-2 py-4">
-                  <span className="font-bold text-[#3C096C]">
+                  <span className="font-bold text-black">
                     Business Hours
                   </span>
                   {vendorDetails.businessHours.map((val, ind) => (

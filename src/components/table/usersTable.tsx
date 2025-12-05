@@ -27,8 +27,8 @@ const AdminUserCard: React.FC<AdminUserCardProps> = ({
     <div className="w-full px-4 sm:px-10 mt-4">
       {/* Header (hidden on mobile) */}
       <div className="hidden sm:flex sm:justify-between sm:pr-18  border-b border-[#E5E5E5] pb-2 mb-2 text-gray-500 text-sm font-medium">
-        <div className="col-span-2">Name</div>
-        <div className="text-left">Date Added</div>
+        <div className="col-span-2 font-semibold text-gray-800">Name</div>
+        <div className="text-left font-semibold text-gray-800">Date Added</div>
       </div>
 
       {/* Rows */}
@@ -49,7 +49,7 @@ const AdminUserCard: React.FC<AdminUserCardProps> = ({
 
               {/* Date & Actions (on mobile) */}
               <div className="flex sm:hidden justify-between items-center mt-3 w-full">
-                <span className="text-gray-600 text-sm">{new Date(user.dateAdded).toLocaleDateString('en-GB')}</span>
+                <span className="text-black text-sm">{new Date(user.dateAdded).toLocaleDateString('en-GB')}</span>
                 <div className="flex gap-x-3">
                   <button
                     onClick={() => onEdit(user)}
@@ -71,7 +71,7 @@ const AdminUserCard: React.FC<AdminUserCardProps> = ({
 
             {/* Date & Actions (on desktop) */}
             <div className="hidden sm:flex justify-end items-center gap-x-6">
-              <span className="text-gray-600 text-sm">{new Date(user.dateAdded).toLocaleDateString('en-GB')}</span>
+              <span className="text-black text-sm">{new Date(user.dateAdded).toLocaleDateString('en-GB')}</span>
              {isViewOnly ? <div className="w-12"></div> : ( 
               <div className="flex justify-end">
                 <button

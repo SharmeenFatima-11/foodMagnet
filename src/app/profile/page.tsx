@@ -60,7 +60,7 @@ const Page = () => {
           onClick={() => router.push("/vendor")}
           className="text-[#9FA2B4] text-sm cursor-pointer"
         >
-          Vendor
+          Home
         </p>
         <ChevronRight className="w-4 h-4 text-gray-400 cursor-pointer" />
         <p className="text-[#8B4DC5] text-sm cursor-pointer">User Management</p>

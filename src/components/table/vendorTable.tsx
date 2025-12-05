@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useMemo } from "react";
-import { ArrowUpDown } from "lucide-react";
+// import { ArrowUpDown } from "lucide-react";
+import { ChevronsUpDown } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -93,14 +94,14 @@ const VendorTable: React.FC<VendorTableProps> = ({ data }) => {
                 >
                   <div className="flex justify-start items-center gap-1">
                     <span>{col.label}</span>
-                    <ArrowUpDown
+                    <ChevronsUpDown
                       size={14}
-                      className={`transition-transform duration-200 ${
+                      className={`transition-transform duration-200 fill-current stroke-2 ${
                         sortConfig.key === col.key
                           ? sortConfig.direction === "asc"
                             ? "rotate-180 text-[#441372]"
                             : "text-[#441372]"
-                          : "text-gray-300"
+                          : "text-black"
                       }`}
                     />
                   </div>
