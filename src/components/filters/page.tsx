@@ -138,7 +138,7 @@ const Filter: React.FC<FilterProps> = ({
       <div className="flex-1 p-6 space-y-3 overflow-y-auto">
         {renderDropdown("Subscription", "subscription", [
           "Free",
-          "Standard",
+          // "Standard",
           "Premium",
         ])}
 
