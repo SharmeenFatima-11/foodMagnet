@@ -31,8 +31,8 @@ const UserForm: React.FC<UserFormProps> = ({
   const [added, setAdded] = useState(false);
 
   const [permissionOptions, setPermissionOptions] = useState([
-    "admin",
-    "viewOnly",
+    "Admin Users",
+    "View Only"
   ]);
 
   const [formError, setFormError] = useState("");

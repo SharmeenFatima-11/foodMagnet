@@ -26,6 +26,12 @@ export const AddUsers = async (body: {
   permission: string;
 }) => {
   try {
+    let {permission} = body;
+    if(permission === "Admin Users") {
+      body.permission = "admin";
+    } else if (permission === "View Only") {
+      body.permission = "viewOnly";
+    }
     let token = localStorage.getItem("userData");
     token = token ? JSON.parse(token).idToken : null;
     const { data } = await axiosInstance.post("admin/users", body, {

@@ -11,7 +11,7 @@ const Header = () => {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("John Doe");
-  const [image, setImage] = useState("https://i.pravatar.cc/100");
+  const [image, setImage] = useState("/logo.svg");
   const [showNotificationModal, setShowNotificationModal] = useState(false);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -30,6 +30,14 @@ const Header = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  useEffect(() => {
+     let userData = localStorage.getItem("userData");
+     let parsedData = userData ? JSON.parse(userData) : null;
+     console.log("parsedData in header:", parsedData);
+     if (parsedData) {
+       setName(parsedData.username || "Admin");
+     }
+  }, []);
   // Compute title
   const title = useMemo(() => {
     if (pathname.includes("vendor")) return "Vendors";
