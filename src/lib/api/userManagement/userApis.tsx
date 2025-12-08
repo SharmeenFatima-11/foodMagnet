@@ -28,7 +28,7 @@ export const AddUsers = async (body: {
   try {
     let {permission} = body;
     if(permission === "Admin Users") {
-      body.permission = "admin";
+      body.permission = "admin"
     } else if (permission === "View Only") {
       body.permission = "viewOnly";
     }
