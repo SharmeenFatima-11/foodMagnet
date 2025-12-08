@@ -1,26 +1,64 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import UploadDocument from "../../../components/button/uploadDocument";
+import {
+  SwitchToggle,
+  GetVerificationStatus,
+} from "../../../lib/api/vendor/documentApis";
+
+interface Vendor {
+  id: number;
+}
 
 const Page = () => {
+  const [vendor, setVendor] = useState<Vendor | null>(null);
   const [enabled, setEnabled] = useState(false);
   const [docs, setDocs] = useState<Array<any>>([]);
 
-  const handleToggle = () => {
-    setEnabled((prev) => {
-      const newState = !prev;
+  const handleToggle = async () => {
+    if (!vendor) return;
 
-      if (newState) {
-        console.log("✅ Toggle Enabled – call your API here");
-      } else {
-        console.log("❌ Toggle Disabled");
-      }
+    const newState = !enabled;
 
-      return newState;
-    });
+    // ✅ Optimistically update UI
+    setEnabled(newState);
+
+    try {
+      const res = await SwitchToggle({
+        id: vendor.id,
+        isVerified: newState,
+      });
+
+      console.log("Data fetched successfully:", res);
+    } catch (error: any) {
+      console.error("Error updating vendor", error.message);
+
+      // ✅ Revert UI if API fails
+      setEnabled(enabled);
+    }
   };
+
+  useEffect(() => {
+    const storedVendorString = sessionStorage.getItem("selectedVendor");
+
+    if (storedVendorString) {
+      const parsedVendor = JSON.parse(storedVendorString);
+      if (!parsedVendor) return;
+      setVendor(parsedVendor);
+      if (parsedVendor?.id != null) {
+        GetVerificationStatus(parsedVendor?.id.toString())
+          .then((res) => {
+            console.log("Data fetched successfully:", res);
+            setEnabled(res.verificationStatus);
+          })
+          .catch((error) => {
+            console.error("Error fetching items", error.message);
+          });
+      }
+    }
+  }, []);
 
   return (
     <div className="flex flex-col flex-grow min-h-0 overflow-hidden">
@@ -50,13 +88,13 @@ const Page = () => {
 
           {/* Verified Badge Animation */}
           <AnimatePresence>
-              <motion.img
-                src="/verifiedBadge.svg"
-                initial={{ opacity: 0, scale: 0.5 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.5 }}
-                transition={{ duration: 0.3 }}
-              />
+            <motion.img
+              src="/verifiedBadge.svg"
+              initial={{ opacity: 0, scale: 0.5 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.5 }}
+              transition={{ duration: 0.3 }}
+            />
           </AnimatePresence>
         </div>
       </div>
