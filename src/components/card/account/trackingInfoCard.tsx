@@ -110,6 +110,7 @@ const TrackingInfoCards: React.FC<VendorSidebarCardProps> = ({
       <div className="flex gap-x-2 mt-2">
         <div className="flex-[4] border-r border-gray-200 pr-4">
           <TrackingInfoField
+            isPublished ={isPublished}
             value={search}
             setValue={setSearch}
             submit={submit}
@@ -123,7 +124,7 @@ const TrackingInfoCards: React.FC<VendorSidebarCardProps> = ({
               }`}
               style={{ scrollbarWidth: "none" }}
             >
-              {isPublished == true && trackingData.length > 0 ? (
+              {trackingData.length > 0 ? (
                 trackingData.map((val, ind) => (
                   <div
                     key={ind}

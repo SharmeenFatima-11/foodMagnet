@@ -5,6 +5,7 @@ import { Search } from "lucide-react";
 import Button from "../button/squareButton";
 
 interface TrackingInfoFieldProps {
+  isPublished: boolean;
   value: string;
   setValue: (val: string) => void;
   submit: () => void;
@@ -12,6 +13,7 @@ interface TrackingInfoFieldProps {
 }
 
 const TrackingInfoField: React.FC<TrackingInfoFieldProps> = ({
+  isPublished,
   value,
   setValue,
   submit,
@@ -39,7 +41,7 @@ const TrackingInfoField: React.FC<TrackingInfoFieldProps> = ({
 
       {/* button inside input */}
       <span className="absolute right-3 inset-y-1 flex items-center">
-        <Button text="Enter" onClick={() => submit()} />
+        <Button text="Enter" onClick={() => submit()} isTriggered={isPublished} />
       </span>
     </div>
   );
