@@ -3,7 +3,10 @@ import React, { useState, useMemo, useEffect } from "react";
 import TrackingInfoField from "../../textFields/trackingInfo";
 import Swal from "sweetalert2";
 import { Copy, ChevronDown, ChevronUp } from "lucide-react";
-import { GetActivateDevice } from "../../../lib/api/vendor/accountApis";
+import {
+  AddTrackingNumber,
+  GetTrackingNumber,
+} from "../../../lib/api/vendor/accountApis";
 
 interface VendorSidebarCardProps {
   isPublished: boolean;
@@ -17,8 +20,9 @@ const TrackingInfoCards: React.FC<VendorSidebarCardProps> = ({
   const [search, setSearch] = useState("");
   const [expanded, setExpanded] = useState(false);
   const [trackingData, setTrackingData] = useState<
-    { id: string; number: string; status: boolean }[]
+    { id: string; tracking_number: string; status: boolean }[]
   >([]);
+  const [trackingAdded, setTrackingAdded] = useState(false);
   const [trackingUpdates] = useState([
     {
       status: "Arrived at Destination",
@@ -58,14 +62,46 @@ const TrackingInfoCards: React.FC<VendorSidebarCardProps> = ({
     },
   ]);
 
-  // Filter tracking numbers based on search input
-  // Filter tracking numbers based on search input
-  const filteredData = useMemo(() => {
-    if (!search.trim()) return trackingData;
-    return trackingData.filter((val) =>
-      val.number.toLowerCase().includes(search.trim().toLowerCase())
-    );
-  }, [search, trackingData]);
+  const submit = async () => {
+    console.log("submit");
+    AddTrackingNumber({ userId: id.toString(), tracking_number: search })
+      .then((data) => {
+        Swal.fire({
+          title: "Success!",
+          text: "Tracking number added successfully.",
+          icon: "success",
+          confirmButtonText: "OK",
+          confirmButtonColor: "#8B4DC5", // custom purple button
+        });
+        setSearch("");
+        setTrackingAdded((prev) => !prev);
+      })
+      .catch((error) => {
+        const errorMessage =
+          error.message || error.error || "Failed to add tracking number.";
+
+        Swal.fire({
+          title: "Error!",
+          text: errorMessage,
+          icon: "error",
+          confirmButtonText: "OK",
+          confirmButtonColor: "#8B4DC5", // purple confirm button
+        });
+      });
+  };
+
+  useEffect(() => {
+    GetTrackingNumber(id.toString())
+      .then((data) => {
+        console.log("data", data);
+        setTrackingData(Array.isArray(data) ? data : []);
+        // setCoupons(Array.isArray(data) ? data : []);
+      })
+      .catch((error) => {
+        const errorMessage =
+          error.message || error.error || "Failed to get coupons.";
+      });
+  }, [id, trackingAdded]);
 
   return (
     <div className=" bg-white rounded-2xl shadow-lg p-6 my-6 transition-all">
@@ -73,32 +109,44 @@ const TrackingInfoCards: React.FC<VendorSidebarCardProps> = ({
       <span className="font-semibold text-gray-700">Tracking Information</span>
       <div className="flex gap-x-2 mt-2">
         <div className="flex-[4] border-r border-gray-200 pr-4">
-          <TrackingInfoField value={search} setValue={setSearch} />
+          <TrackingInfoField
+            value={search}
+            setValue={setSearch}
+            submit={submit}
+          />
 
           <div className="flex flex-col gap-y-3 mt-6">
             <span className="font-semibold text-gray-700">Tracking Log</span>
-
-            {isPublished == true && filteredData.length > 0 ? (
-              filteredData.map((val, ind) => (
-                <div
-                  key={ind}
-                  className="flex justify-between items-center border-b border-gray-100 text-[#8B4DC5] py-2 group"
-                >
-                  <span className="font-medium tracking-wide">
-                    {val.number}
-                  </span>
-                  <Copy
-                    size={16}
-                    className="cursor-pointer text-[#8B4DC5] opacity-80 group-hover:opacity-100 transition-opacity"
-                    onClick={() => navigator.clipboard.writeText(val.number)}
-                  />
-                </div>
-              ))
-            ) : (
-              <span className="text-gray-400 text-sm italic mt-2">
-                No results found
-              </span>
-            )}
+            <div
+              className={`overflow-y-auto pr-3 transition-all duration-500 ease-in-out ${
+                expanded ? "max-h-48" : "max-h-32"
+              }`}
+              style={{ scrollbarWidth: "none" }}
+            >
+              {isPublished == true && trackingData.length > 0 ? (
+                trackingData.map((val, ind) => (
+                  <div
+                    key={ind}
+                    className="flex justify-between items-center border-b border-gray-100 text-[#8B4DC5] py-2 group"
+                  >
+                    <span className="font-medium tracking-wide">
+                      {val.tracking_number}
+                    </span>
+                    <Copy
+                      size={16}
+                      className="cursor-pointer text-[#8B4DC5] opacity-80 group-hover:opacity-100 transition-opacity"
+                      onClick={() =>
+                        navigator.clipboard.writeText(val.tracking_number)
+                      }
+                    />
+                  </div>
+                ))
+              ) : (
+                <span className="text-gray-400 text-sm italic mt-2">
+                  No results found
+                </span>
+              )}
+            </div>
           </div>
         </div>
 
@@ -150,7 +198,7 @@ const TrackingInfoCards: React.FC<VendorSidebarCardProps> = ({
                     {/* Status text - bold for current/latest */}
                     <span
                       className={`block text-md font-semibold ${
-                        ind === 0 ? "text-[#333333]" : "text-[#666666]"
+                        ind === 0 ? "text-[#333333]" : "text-[#333333]"
                       }`}
                     >
                       {val.status}

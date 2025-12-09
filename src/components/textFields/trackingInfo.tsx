@@ -7,12 +7,14 @@ import Button from "../button/squareButton";
 interface TrackingInfoFieldProps {
   value: string;
   setValue: (val: string) => void;
+  submit: () => void;
   placeholder?: string;
 }
 
 const TrackingInfoField: React.FC<TrackingInfoFieldProps> = ({
   value,
   setValue,
+  submit,
   placeholder = "Tracking Number",
 }) => {
   return (
@@ -37,7 +39,7 @@ const TrackingInfoField: React.FC<TrackingInfoFieldProps> = ({
 
       {/* button inside input */}
       <span className="absolute right-3 inset-y-1 flex items-center">
-        <Button text="Enter" onClick={() => console.log("Enter pressed")} />
+        <Button text="Enter" onClick={() => submit()} />
       </span>
     </div>
   );

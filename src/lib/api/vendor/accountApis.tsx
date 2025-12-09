@@ -56,7 +56,7 @@ export const RevokeAccount = async (id: number) => {
 
 export const ActivateDevice = async (
   trackerSerialNumber: string,
-  foodTruckId: any,
+  foodTruckId: any
 ) => {
   try {
     const { data } = await axiosInstance.post(`/foodTrucks/device/activate`, {
@@ -106,6 +106,54 @@ export const DeActivateDevice = async (body: { foodTruckId: string }) => {
       error.response?.data?.error ||
       error.response?.data?.error?.message ||
       "Failed to deactivate device";
+    throw new Error(message);
+  }
+};
+
+export const AddTrackingNumber = async (body: {
+  userId: string;
+  tracking_number: string;
+}) => {
+  try {
+    let token = localStorage.getItem("userData");
+    token = token ? JSON.parse(token).idToken : null;
+    const { data } = await axiosInstance.post(
+      `foodTrucks/trackingNumber`,
+      body,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+    return data;
+  } catch (error: any) {
+    const message =
+      error.response?.data?.error[0].error ||
+      error.response?.data?.message ||
+      error.response?.data?.error ||
+      error.response?.data?.error?.message ||
+      "Failed to add tracking number";
+    throw new Error(message);
+  }
+};
+
+export const GetTrackingNumber = async (userId: string) => {
+  try {
+    let token = localStorage.getItem("userData");
+    token = token ? JSON.parse(token).idToken : null;
+    const { data } = await axiosInstance.get(
+      `foodTrucks/trackingNumber/${userId}`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+    return data;
+  } catch (error: any) {
+    const message =
+      error.response?.data?.error[0].error ||
+      error.response?.data?.message ||
+      error.response?.data?.error ||
+      error.response?.data?.error?.message ||
+      "Failed to get tracking number";
     throw new Error(message);
   }
 };
