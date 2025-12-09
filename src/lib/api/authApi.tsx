@@ -60,7 +60,7 @@ export const RefreshToken = async () => {
   }
 };
 
-export const ResetPassword = async (body: { email: string }) => {
+export const ResetPassword = async (body: { email: string, isRegistrationEmail: boolean | null }) => {
   try {
     const { data } = await axiosInstance.post(
       "/admin/users/sendPasswordReset",

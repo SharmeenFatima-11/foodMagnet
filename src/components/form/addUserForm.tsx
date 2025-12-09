@@ -125,7 +125,7 @@ const UserForm: React.FC<UserFormProps> = ({
     };
     AddUsers(userData)
       .then((data) => {
-        ResetPassword({ email })
+        ResetPassword({ email, isRegistrationEmail: true });
         Swal.fire({
           title: "Success!",
           text: "User added successfully.",

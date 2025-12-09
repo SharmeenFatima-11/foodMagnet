@@ -37,7 +37,7 @@ const Page = () => {
 
     if (hasError) return;
 
-    ResetPassword({ email })
+    ResetPassword({ email, isRegistrationEmail: false })
       .then((data) => {
         router.push("/forget-password-confirmation");
       })

@@ -6,6 +6,7 @@ import TextField from "../textFields/textField";
 import SquareButton from "../button/squareButton";
 import WhiteSquareButton from "../button/whiteSquareButton";
 import { UpdateUsers } from "../../lib/api/userManagement/userApis";
+import { ResetPassword } from "../../lib/api/authApi";
 import Swal from "sweetalert2";
 
 interface UserFormProps {
@@ -94,6 +95,33 @@ const UserForm: React.FC<UserFormProps> = ({
 
   const handleCancel = () => {
     resetForm();
+    setModel(false);
+  };
+
+  const handleReset = () => {
+    ResetPassword({ email, isRegistrationEmail: true })
+      .then((data) => {
+        Swal.fire({
+          title: "Success!",
+          text: "Email sent successfully.",
+          icon: "success",
+          confirmButtonText: "OK",
+          confirmButtonColor: "#8B4DC5", // custom purple button
+        });
+        setModel(false);
+      })
+      .catch((error) => {
+        const errorMessage =
+          error.message || error.error || "Failed to add user.";
+
+        Swal.fire({
+          title: "Error!",
+          text: errorMessage,
+          icon: "error",
+          confirmButtonText: "OK",
+          confirmButtonColor: "#8B4DC5", // purple confirm button
+        });
+      });
   };
 
   const handleSubmit = () => {
@@ -106,7 +134,7 @@ const UserForm: React.FC<UserFormProps> = ({
 
     setFormError("");
     if (!user || !user.id) {
-      console.log("user in condition", user)
+      console.log("user in condition", user);
       Swal.fire({
         title: "Error!",
         text: "User Id cannot be null",
@@ -162,7 +190,7 @@ const UserForm: React.FC<UserFormProps> = ({
 
   return (
     <motion.div
-      className="fixed top-0 right-0 w-[420px] h-full bg-white shadow-2xl z-50 flex flex-col"
+      className="fixed top-0 right-0 w-[440px] h-full bg-white shadow-2xl z-50 flex flex-col"
       initial={{ x: "100%" }}
       animate={{ x: 0 }}
       exit={{ x: "100%" }}
@@ -231,6 +259,13 @@ const UserForm: React.FC<UserFormProps> = ({
             <WhiteSquareButton
               text="Cancel"
               onClick={handleCancel}
+              isTriggered={added}
+            />
+          </div>
+          <div className="">
+            <SquareButton
+              text="Resend Link"
+              onClick={handleReset}
               isTriggered={added}
             />
           </div>

@@ -17,6 +17,7 @@ const Page = () => {
   const [password, setPassword] = useState<string>("");
   const [passwordError, setPasswordError] = useState<string>("");
   const [apiError, setApiError] = useState<string>("");
+  const [type, setType] = useState<string | null>(null);
 
   const confirmPasswordRef = useRef<HTMLInputElement | null>(null);
   const passwordRef = useRef<HTMLInputElement | null>(null);
@@ -66,6 +67,7 @@ const Page = () => {
 
     const code = searchParams.get("code");
     const id = searchParams.get("id");
+
     if (!code || !id) {
       Swal.fire({
         title: "Error!",
@@ -112,6 +114,8 @@ const Page = () => {
   useEffect(() => {
     const code = searchParams.get("code");
     const id = searchParams.get("id");
+    const type = searchParams.get("type");
+    setType(type);
 
     if (!code || !id) {
       Swal.fire({
@@ -146,7 +150,11 @@ const Page = () => {
         <div className="flex flex-col items-center text-center mt-16">
           <DonutLogo />
           <div className="flex flex-col items-center gap-y-2 mt-2">
-            <h3 className="text-2xl font-bold mb-2">Create A New Account</h3>
+            <h3 className="text-2xl font-bold mb-2">
+              {type == "registration"
+                ? "Create A New Account"
+                : "Update Password"}
+            </h3>
             <p className="text-base font-normal leading-relaxed">
               Set a secure password to protect <br /> your account.
             </p>
@@ -181,7 +189,9 @@ const Page = () => {
 
           <div className="mt-6">
             <Button
-              text="Update Password"
+              text={
+                type === "registration" ? "Create Account" : "Update Password"
+              }
               onClick={handleSubmit}
               buttonRef={buttonRef}
             />
