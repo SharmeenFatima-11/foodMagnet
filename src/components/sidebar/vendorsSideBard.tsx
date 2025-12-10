@@ -25,6 +25,7 @@ interface VendorDetails {
   logoImageUrl: string | null;
   hasGenerator: boolean;
   hasSeating: boolean;
+  isVerified: boolean;
   paymentOptions: string[] | null;
   businessHours: { day: string; hours: string }[] | null;
 }
@@ -105,9 +106,15 @@ const VendorSideBar: React.FC<VendorSideBarProps> = ({ vendor }) => {
                 className="w-28 h-28 sm:w-32 sm:h-32 rounded-full object-cover border border-gray-200"
               />
             </div>
-            <p className="text-lg font-bold text-[#3C096C]">
+            <div className="flex justify-center items-center gap-2">
+              <p className="text-lg font-bold text-[#3C096C]">
               {vendorDetails?.businessName || "-"}
             </p>
+
+            {vendorDetails?.isVerified || <img
+                            src="/verifiedBadge.svg"/>}
+            </div>
+            
           </div>
 
           {/* Vendor Details */}
