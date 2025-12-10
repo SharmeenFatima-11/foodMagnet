@@ -82,12 +82,12 @@ const VendorSideBar: React.FC<VendorSideBarProps> = ({ vendor }) => {
           <div className="flex justify-between items-center flex-wrap gap-2">
             <div
               className={`rounded-full px-3 py-1 text-xs font-medium ${
-                vendorDetails?.activeStatus ? "bg-green-600" : "bg-gray-400"
-              } text-white`}
+                vendorDetails?.activeStatus ? "bg-[#45BCB675] text-black" : "bg-gray-400 text-white"
+              }`}
             >
               {vendorDetails?.activeStatus ? "Published" : "Unpublished"}
             </div>
-            <div className="bg-[#343A40] text-white rounded-full px-4 py-1 text-xs font-medium">
+            <div className={`${vendorDetails?.subscriptionTitle == "Free"?'bg-[#343A40]': "bg-[#3C096C]" } text-white rounded-full px-4 py-1 text-xs font-medium`}>
               {vendorDetails?.subscriptionTitle}
             </div>
           </div>

@@ -24,7 +24,7 @@ const TextField: React.FC<TextFieldProps> = ({
   inputRef,
   onKeyDown,
   multiline = true,
-  maxLength = 500, // default max characters for multiline
+  maxLength = 1000, // default max characters for multiline
 }) => {
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
