@@ -1,8 +1,9 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import VendorSidebarCard from "../card/vendorSidebarCard";
 import { GetVendorDetails } from "../../lib/api/vendor/vendorApi";
 import { motion } from "framer-motion";
+import { useVendor } from "../../context/vendorContext";
 
 interface Vendor {
   id: any;
@@ -38,6 +39,7 @@ const VendorSideBar: React.FC<VendorSideBarProps> = ({ vendor }) => {
   const [vendorDetails, setVendorDetails] = useState<VendorDetails | null>(
     null
   );
+  const {verified} = useVendor();
 
   useEffect(() => {
     if (vendor?.id != null) {
@@ -50,7 +52,7 @@ const VendorSideBar: React.FC<VendorSideBarProps> = ({ vendor }) => {
           console.error("Error fetching vendor details:", error.message);
         });
     }
-  }, [vendor]);
+  }, [vendor, verified]);
 
   return (
     <motion.div

@@ -7,15 +7,19 @@ import {
   SwitchToggle,
   GetVerificationStatus,
 } from "../../../lib/api/vendor/documentApis";
+import { useVendor } from "../../../context/vendorContext";
 
 interface Vendor {
   id: number;
+  isVerified: boolean;
 }
 
 const Page = () => {
+  const { setVerified } = useVendor();
   const [vendor, setVendor] = useState<Vendor | null>(null);
   const [enabled, setEnabled] = useState(false);
   const [docs, setDocs] = useState<Array<any>>([]);
+  const [isDisabled, setDisabled] = useState(true);
 
   const handleToggle = async () => {
     if (!vendor) return;
@@ -23,18 +27,21 @@ const Page = () => {
     const newState = !enabled;
 
     // ✅ Optimistically update UI
-    setEnabled(newState);
+    setDisabled(true);
 
     try {
       const res = await SwitchToggle({
         id: vendor.id,
         isVerified: newState,
       });
+      setVerified(newState);
+      setEnabled(newState);
+      setDisabled(false);
 
       console.log("Data fetched successfully:", res);
     } catch (error: any) {
       console.error("Error updating vendor", error.message);
-
+      setDisabled(false);
       // ✅ Revert UI if API fails
       setEnabled(enabled);
     }
@@ -52,6 +59,7 @@ const Page = () => {
           .then((res) => {
             console.log("Data fetched successfully:", res);
             setEnabled(res.verificationStatus);
+            setDisabled(false);
           })
           .catch((error) => {
             console.error("Error fetching items", error.message);
@@ -72,6 +80,7 @@ const Page = () => {
           {/* Toggle Switch */}
           <button
             onClick={handleToggle}
+            disabled={isDisabled}
             className={`relative w-10 h-5 flex items-center rounded-full transition-colors duration-300 ${
               enabled ? "bg-[#8B4DC5]" : "bg-gray-300"
             }`}

@@ -6,10 +6,12 @@ import { useRouter } from "next/navigation";
 import { ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
 import { GetVendorDetails } from "../../lib/api/vendor/vendorApi";
+import { VendorProvider } from "../../context/vendorContext";
 
 interface Vendor {
   id: string;
   businessName: string;
+  isVerified: boolean;
 }
 
 export default function ClientLayout({
@@ -17,7 +19,12 @@ export default function ClientLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <LayoutContent>{children}</LayoutContent>;
+  return (
+    <VendorProvider>
+      {" "}
+      <LayoutContent>{children}</LayoutContent>{" "}
+    </VendorProvider>
+  );
 }
 
 function LayoutContent({ children }: { children: React.ReactNode }) {

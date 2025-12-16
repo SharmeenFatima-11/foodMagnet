@@ -10,7 +10,7 @@ interface Vendor {
   firstName: string;
   lastName: string;
   businessName: string;
-  activeStatus: boolean;
+  activeStatus: boolean | string;
   businessAddress: string;
   subscriptionTitle: string;
   permitExpiration: string;
@@ -92,8 +92,6 @@ const VendorTable: React.FC<VendorTableProps> = ({ data }) => {
                   className="px-3 sm:px-4 py-3 cursor-pointer select-none text-[#343A40] hover:text-gray-700 whitespace-nowrap"
                   onClick={() => handleSort(col.key)}
                 >
-
-                  
                   <div className="flex justify-start items-center gap-1 text-black">
                     <span>{col.label}</span>
                     <ChevronsUpDown
@@ -127,21 +125,30 @@ const VendorTable: React.FC<VendorTableProps> = ({ data }) => {
                   <td className="px-4 py-3 text-[#441372] font-medium hover:underline break-words">
                     {item.firstName} {item.lastName}
                   </td>
-                  <td className="px-4 py-3 break-words">{item.businessName? item.businessName: "-"}</td>
                   <td className="px-4 py-3 break-words">
-                    {item.businessAddress? item.businessAddress: "-"}
+                    {item.businessName ? item.businessName : "-"}
                   </td>
-                  <td className="px-4 py-3">
+                  <td className="px-4 py-3 break-words">
+                    {item.businessAddress ? item.businessAddress : "-"}
+                  </td>
+                  <td className="px-4 py-3 text-center align-middle">
                     <span
-                      className={`px-3 py-1 text-xs font-medium rounded-full ${
-                        item.activeStatus
+                      className={`inline-flex items-center justify-center px-3 py-1 text-xs font-medium rounded-full whitespace-nowrap ${
+                        item.activeStatus === "Ready For Review"
+                          ? "bg-[#F4BD67] text-white"
+                          : item.activeStatus
                           ? "bg-[rgba(69,188,182,0.46)] text-[#343A40]"
                           : "bg-[#ABABAB] text-white"
                       }`}
                     >
-                      {item.activeStatus ? "Published" : "Unpublished"}
+                      {item.activeStatus === "Ready For Review"
+                        ? item.activeStatus
+                        : item.activeStatus
+                        ? "Published"
+                        : "Unpublished"}
                     </span>
                   </td>
+
                   <td className="px-4 py-3">
                     <span
                       className={`px-3 py-1 text-xs font-medium rounded-full ${
