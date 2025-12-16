@@ -111,7 +111,7 @@ const VendorSideBar: React.FC<VendorSideBarProps> = ({ vendor }) => {
               {vendorDetails?.businessName || "-"}
             </p>
 
-            {vendorDetails?.isVerified || <img
+            {vendorDetails?.isVerified && <img
                             src="/verifiedBadge.svg"/>}
             </div>
             
