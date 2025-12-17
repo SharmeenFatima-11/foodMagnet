@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { Search } from "lucide-react";
 import Button from "../button/squareButton";
 
 interface TrackingInfoFieldProps {
@@ -41,7 +40,7 @@ const TrackingInfoField: React.FC<TrackingInfoFieldProps> = ({
 
       {/* button inside input */}
       <span className="absolute right-3 inset-y-1 flex items-center">
-        <Button text="Enter" onClick={() => submit()} isTriggered={isPublished} />
+        <Button text="Enter" onClick={() => submit()} isTriggered={!isPublished} />
       </span>
     </div>
   );
