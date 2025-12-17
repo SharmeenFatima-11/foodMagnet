@@ -19,13 +19,13 @@ export const connectWebSocket = (onMessage?: (data: any) => void) => {
 
   // const WS_URL = `wss://nnhkp72zd1.execute-api.us-east-2.amazonaws.com/staging/`;
   // socket = new WebSocket(WS_URL, token ? [`Bearer ${token}`] : []);
-  const WS_URL = `wss://nnhkp72zd1.execute-api.us-east-2.amazonaws.com/staging?token=${token}`;
-socket = new WebSocket(WS_URL);
+  const WS_URL = `wss://nnhkp72zd1.execute-api.us-east-2.amazonaws.com/staging?Authorization=${token}`;
+  socket = new WebSocket(WS_URL);
 
-
-  socket.onopen = () => {
-    console.log("✅ WebSocket connected");
-  };
+  // socket.onopen = () => {
+  //   console.log("✅ WebSocket connected");
+  // };
+  socket.onopen = () => socket?.send(JSON.stringify({ type: "auth", token }));
 
   socket.onmessage = (event: MessageEvent) => {
     try {
