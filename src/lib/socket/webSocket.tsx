@@ -17,8 +17,11 @@ export const connectWebSocket = (onMessage?: (data: any) => void) => {
   if (!token) return;
   if (socket && socket.readyState === WebSocket.OPEN) return socket;
 
-  const WS_URL = `wss://nnhkp72zd1.execute-api.us-east-2.amazonaws.com/staging/`;
-  socket = new WebSocket(WS_URL, token ? [`Bearer ${token}`] : []);
+  // const WS_URL = `wss://nnhkp72zd1.execute-api.us-east-2.amazonaws.com/staging/`;
+  // socket = new WebSocket(WS_URL, token ? [`Bearer ${token}`] : []);
+  const WS_URL = `wss://nnhkp72zd1.execute-api.us-east-2.amazonaws.com/staging?token=${token}`;
+socket = new WebSocket(WS_URL);
+
 
   socket.onopen = () => {
     console.log("✅ WebSocket connected");
