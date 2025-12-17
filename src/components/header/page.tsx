@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { Bell } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import ShowNotification from "../form/notifications";
+import { connectWebSocket, closeWebSocket } from "../../lib/socket/webSocket";
 
 const Header = () => {
   const router = useRouter();
@@ -13,6 +14,7 @@ const Header = () => {
   const [name, setName] = useState("John Doe");
   const [image, setImage] = useState("/logo.svg");
   const [showNotificationModal, setShowNotificationModal] = useState(false);
+  const [notificationsRecieved, setNotificationsRecieved] = useState(false);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -31,13 +33,26 @@ const Header = () => {
   }, []);
 
   useEffect(() => {
-     let userData = localStorage.getItem("userData");
-     let parsedData = userData ? JSON.parse(userData) : null;
-     console.log("parsedData in header:", parsedData);
-     if (parsedData) {
-       setName(parsedData.username || "Admin");
-     }
+    let userData = localStorage.getItem("userData");
+    let parsedData = userData ? JSON.parse(userData) : null;
+    console.log("parsedData in header:", parsedData);
+    if (parsedData) {
+      setName(parsedData.username || "Admin");
+    }
   }, []);
+
+  useEffect(() => {
+    setNotificationsRecieved;
+    const ws = connectWebSocket((data) => {
+      // Append new message to state
+      setNotificationsRecieved(true);
+    });
+
+    return () => {
+      closeWebSocket();
+    };
+  }, []);
+
   // Compute title
   const title = useMemo(() => {
     if (pathname.includes("vendor")) return "Vendors";
@@ -83,13 +98,18 @@ const Header = () => {
           whileTap={{ scale: 0.9 }}
           transition={{ type: "spring", stiffness: 250, damping: 15 }}
           className="relative cursor-pointer"
-          onClick={() => setShowNotificationModal(true)}
+          onClick={() => {
+            setShowNotificationModal(true);
+            setNotificationsRecieved(false);
+          }}
         >
           <Bell className="w-6 h-6 text-[#441372]" />
-          {/* <motion.span
-            layout
-            className="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full"
-          /> */}
+          {notificationsRecieved && (
+            <motion.span
+              layout
+              className="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full"
+            />
+          )}
         </motion.div>
 
         {/* User Avatar + Dropdown */}
