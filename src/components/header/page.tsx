@@ -5,7 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { Bell } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import ShowNotification from "../form/notifications";
-import { connectWebSocket, closeWebSocket } from "../../lib/socket/webSocket";
+// import { connectWebSocket, closeWebSocket } from "../../lib/socket/webSocket";
 
 const Header = () => {
   const router = useRouter();
@@ -41,17 +41,17 @@ const Header = () => {
     }
   }, []);
 
-  useEffect(() => {
-    setNotificationsRecieved;
-    const ws = connectWebSocket((data) => {
-      // Append new message to state
-      setNotificationsRecieved(true);
-    });
+  // useEffect(() => {
+  //   setNotificationsRecieved;
+  //   const ws = connectWebSocket((data) => {
+  //     // Append new message to state
+  //     setNotificationsRecieved(true);
+  //   });
 
-    return () => {
-      closeWebSocket();
-    };
-  }, []);
+  //   return () => {
+  //     closeWebSocket();
+  //   };
+  // }, []);
 
   // Compute title
   const title = useMemo(() => {

@@ -1,4 +1,3 @@
-// lib/socket/webSocket.ts
 let socket: WebSocket | null = null;
 let reconnectTimeout: NodeJS.Timeout | null = null;
 
@@ -14,24 +13,43 @@ export const connectWebSocket = (onMessage?: (data: any) => void) => {
     return;
   }
 
-  if (!token) return;
-  if (socket && socket.readyState === WebSocket.OPEN) return socket;
+  if (!token) {
+    console.error("No authentication token available");
+    return;
+  }
 
-  // const WS_URL = `wss://nnhkp72zd1.execute-api.us-east-2.amazonaws.com/staging/`;
-  // socket = new WebSocket(WS_URL, token ? [`Bearer ${token}`] : []);
-  const WS_URL = `wss://nnhkp72zd1.execute-api.us-east-2.amazonaws.com/staging?Authorization=${token}`;
+  // Close existing connection if any
+  if (socket) {
+    socket.close();
+  }
+
+  // IMPORTANT: Two valid ways to send token:
+  // Option 1: As query parameter (simpler, most common)
+  const WS_URL = `wss://nnhkp72zd1.execute-api.us-east-2.amazonaws.com/staging?Authorization=${encodeURIComponent(token)}`;
+  
+  // Option 2: Using Sec-WebSocket-Protocol header (alternative)
+  // const WS_URL = `wss://nnhkp72zd1.execute-api.us-east-2.amazonaws.com/staging`;
+  
   socket = new WebSocket(WS_URL);
 
-  // socket.onopen = () => {
-  //   console.log("✅ WebSocket connected");
-  // };
-  socket.onopen = () => socket?.send(JSON.stringify({ type: "auth", token }));
+  // If using Sec-WebSocket-Protocol header (uncomment if using Option 2)
+  // socket = new WebSocket(WS_URL, ["my-protocol", token]);
+
+  socket.onopen = () => {
+    console.log("✅ WebSocket connected to:", WS_URL);
+    
+    // Send authentication message after connection opens (optional)
+    // socket.send(JSON.stringify({ 
+    //   action: "auth", 
+    //   token: token 
+    // }));
+  };
 
   socket.onmessage = (event: MessageEvent) => {
     try {
       const data = JSON.parse(event.data);
       console.log("📩 Message received:", data);
-      if (onMessage) onMessage(data); // ← call callback
+      if (onMessage) onMessage(data);
     } catch (err) {
       console.warn("⚠️ Failed to parse WebSocket message:", event.data, err);
     }
@@ -43,7 +61,14 @@ export const connectWebSocket = (onMessage?: (data: any) => void) => {
   };
 
   socket.onclose = (event: CloseEvent) => {
-    console.warn("⚠️ WebSocket closed:", event.code, event.reason);
+    console.warn("⚠️ WebSocket closed. Code:", event.code, "Reason:", event.reason);
+    
+    // Don't reconnect on auth failures (401, 403)
+    if (event.code === 1008 || event.code === 4003) {
+      console.error("Authentication failed, not reconnecting");
+      return;
+    }
+    
     reconnect();
   };
 
@@ -54,12 +79,8 @@ const reconnect = () => {
   if (reconnectTimeout) return;
 
   reconnectTimeout = setTimeout(() => {
+    console.log("🔄 Attempting to reconnect WebSocket...");
     reconnectTimeout = null;
-    if (socket) {
-      socket.onclose = null;
-      socket.onerror = null;
-      socket = null;
-    }
     connectWebSocket();
   }, 3000);
 };
@@ -67,14 +88,27 @@ const reconnect = () => {
 export const sendWebSocketMessage = (data: any) => {
   if (socket?.readyState === WebSocket.OPEN) {
     socket.send(JSON.stringify(data));
+    return true;
   } else {
-    console.warn("⚠️ WebSocket not connected");
+    console.warn("⚠️ WebSocket not connected. Current state:", socket?.readyState);
+    return false;
   }
 };
 
 export const closeWebSocket = () => {
   if (socket) {
-    socket.close();
+    socket.close(1000, "Client closing connection");
     socket = null;
   }
+  if (reconnectTimeout) {
+    clearTimeout(reconnectTimeout);
+    reconnectTimeout = null;
+  }
+};
+
+// Helper to check connection state
+export const getWebSocketState = () => {
+  if (!socket) return "CLOSED";
+  const states = ["CONNECTING", "OPEN", "CLOSING", "CLOSED"];
+  return states[socket.readyState] || "UNKNOWN";
 };
