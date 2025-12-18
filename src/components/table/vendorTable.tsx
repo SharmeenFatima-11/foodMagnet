@@ -68,6 +68,9 @@ const VendorTable: React.FC<VendorTableProps> = ({ data }) => {
 
   const handleRowClick = (vendor: Vendor) => {
     router.push(`/vendor/details?id=${vendor.id}`);
+    if(vendor.activeStatus =="Ready For Review"){
+      vendor.activeStatus = false
+    }
     sessionStorage.setItem("selectedVendor", JSON.stringify(vendor));
   };
 

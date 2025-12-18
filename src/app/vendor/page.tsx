@@ -48,25 +48,21 @@ const Page = () => {
         }
       }
 
-      // 🔍 Search filter
       const matchesSearch =
         !query ||
         `${item.firstName} ${item.lastName}`.toLowerCase().includes(query) ||
         item.businessName?.toLowerCase().includes(query) ||
         item.businessAddress?.toLowerCase().includes(query);
 
-      // 🎟️ Subscription filter
       const matchesSubscription =
         !filters.subscription ||
         item.subscriptionTitle?.toLowerCase() ===
           filters.subscription.toLowerCase();
 
-      // 🧾 Permit/activation filter
       const matchesPermit =
         !filters.permitStatus ||
         status.toLowerCase() === filters.permitStatus.toLowerCase();
 
-      // 🏙️ City filter
       const matchesCity =
         !filters.city ||
         item.city?.toLowerCase().includes(filters.city.toLowerCase());
@@ -77,7 +73,6 @@ const Page = () => {
     });
   }, [search, data, filters]);
 
-  // ✅ Fetch vendor data
   useEffect(() => {
     GetVendors()
       .then((res) => {
@@ -139,7 +134,6 @@ const Page = () => {
         <Table data={filteredData} />
       </motion.div>
 
-      {/* 🧩 Filter Sidebar */}
       <AnimatePresence>
         {showFilter && (
           <>
