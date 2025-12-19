@@ -6,8 +6,13 @@ import VendorLayout from "./vendorLayout";
 import { usePathname } from "next/navigation";
 import { useEffect, useState, Suspense } from "react";
 import { ViewOnlyContext } from "@/context/ViewOnlyContext";
+import { AdminProvider } from "@/context/adminContext";
 
-export default function ClientLayoutWrapper({ children }: { children: React.ReactNode }) {
+export default function ClientLayoutWrapper({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <ClientLayout>{children}</ClientLayout>
@@ -31,7 +36,9 @@ function ClientLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <ViewOnlyContext.Provider value={{ isViewOnly }}>
-      <LayoutContent isVendorRoute={isVendorRoute}>{children}</LayoutContent>
+      <AdminProvider>
+        <LayoutContent isVendorRoute={isVendorRoute}>{children}</LayoutContent>
+      </AdminProvider>
     </ViewOnlyContext.Provider>
   );
 }

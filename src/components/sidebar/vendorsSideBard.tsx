@@ -4,6 +4,7 @@ import VendorSidebarCard from "../card/vendorSidebarCard";
 import { GetVendorDetails } from "../../lib/api/vendor/vendorApi";
 import { motion } from "framer-motion";
 import { useVendor } from "../../context/vendorContext";
+import { useAdmin } from "@/context/adminContext";
 
 interface Vendor {
   id: any;
@@ -39,20 +40,30 @@ const VendorSideBar: React.FC<VendorSideBarProps> = ({ vendor }) => {
   const [vendorDetails, setVendorDetails] = useState<VendorDetails | null>(
     null
   );
-  const {verified} = useVendor();
+  const { verified } = useVendor();
+  const { vendorId, setActiveState } = useAdmin();
 
   useEffect(() => {
-    if (vendor?.id != null) {
-      GetVendorDetails(vendor.id)
+    let id = vendor?.id;
+    if (vendorId) {
+      id = vendorId;
+    }
+    if (id != null) {
+      GetVendorDetails(id)
         .then((res) => {
           console.log("Data fetched successfully:", res);
           setVendorDetails(res.foodTruckData);
+          setActiveState(res.foodTruckData.activeStatus);
+          sessionStorage.setItem(
+            "selectedVendor",
+            JSON.stringify({ id, activeStatus: res.foodTruckData.activeStatus })
+          );
         })
         .catch((error) => {
           console.error("Error fetching vendor details:", error.message);
         });
     }
-  }, [vendor, verified]);
+  }, [vendor, verified, vendorId]);
 
   return (
     <motion.div
@@ -85,12 +96,20 @@ const VendorSideBar: React.FC<VendorSideBarProps> = ({ vendor }) => {
           <div className="flex justify-between items-center flex-wrap gap-2">
             <div
               className={`rounded-full px-3 py-1 text-xs font-medium ${
-                vendorDetails?.activeStatus ? "bg-[#45BCB675] text-black" : "bg-gray-400 text-white"
+                vendorDetails?.activeStatus
+                  ? "bg-[#45BCB675] text-black"
+                  : "bg-gray-400 text-white"
               }`}
             >
               {vendorDetails?.activeStatus ? "Published" : "Unpublished"}
             </div>
-            <div className={`${vendorDetails?.subscriptionTitle == "Free"?'bg-[#343A40]': "bg-[#3C096C]" } text-white rounded-full px-4 py-1 text-xs font-medium`}>
+            <div
+              className={`${
+                vendorDetails?.subscriptionTitle == "Free"
+                  ? "bg-[#343A40]"
+                  : "bg-[#3C096C]"
+              } text-white rounded-full px-4 py-1 text-xs font-medium`}
+            >
               {vendorDetails?.subscriptionTitle}
             </div>
           </div>
@@ -110,13 +129,11 @@ const VendorSideBar: React.FC<VendorSideBarProps> = ({ vendor }) => {
             </div>
             <div className="flex justify-center items-center gap-2">
               <p className="text-lg font-bold text-[#3C096C]">
-              {vendorDetails?.businessName || "-"}
-            </p>
+                {vendorDetails?.businessName || "-"}
+              </p>
 
-            {vendorDetails?.isVerified && <img
-                            src="/verifiedBadge.svg"/>}
+              {vendorDetails?.isVerified && <img src="/verifiedBadge.svg" />}
             </div>
-            
           </div>
 
           {/* Vendor Details */}
@@ -148,9 +165,7 @@ const VendorSideBar: React.FC<VendorSideBarProps> = ({ vendor }) => {
             {vendorDetails?.businessHours &&
               vendorDetails.businessHours.length > 0 && (
                 <div className="flex flex-col gap-y-2 py-4">
-                  <span className="font-bold text-black">
-                    Business Hours
-                  </span>
+                  <span className="font-bold text-black">Business Hours</span>
                   {vendorDetails.businessHours.map((val, ind) => (
                     <div
                       key={ind}

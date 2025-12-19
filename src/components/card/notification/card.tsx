@@ -2,6 +2,7 @@ import React from "react";
 import { AlertTriangle, Bell, Clock } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { useRouter } from "next/navigation";
+import { useAdmin } from "@/context/adminContext";
 
 type MessageType =
   | "alert"
@@ -24,6 +25,7 @@ const Card = ({ notification, setModel }: { notification: Notification , setMode
   const { title, messageContent, createdAt, messageType, read, userId } =
     notification;
   const router = useRouter();
+  const {setVendorId} = useAdmin()
 
   // Format date like "3 days ago"
   const formattedDate = createdAt
@@ -72,6 +74,7 @@ const Card = ({ notification, setModel }: { notification: Notification , setMode
             JSON.stringify({ id: userId })
           );
           setModel(false)
+          setVendorId(userId)
         }
       }}
     >
