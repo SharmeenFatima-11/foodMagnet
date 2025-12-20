@@ -158,12 +158,31 @@ export const GetTrackingNumber = async (userId: string) => {
   }
 };
 
+export const GetCouponsAndTrials = async () => {
+  try {
+    const { data } = await axiosInstance.get(`coupon`);
+    return data;
+  } catch (error: any) {
+    const message =
+      error.response?.data?.error[0].error ||
+      error.response?.data?.message ||
+      error.response?.data?.error ||
+      error.response?.data?.error?.message ||
+      "Failed to get coupon";
+    throw new Error(message);
+  }
+};
+
 export const CreateCoupon = async (body: {
   userId: number;
   promo_code: string;
   coupon_type: string;
   expiry_date: string | Date;
+  is_trial: boolean;
+  is_coupon: boolean;
+  couponId: string;
 }) => {
+  console.log("body", body)
   try {
     const { data } = await axiosInstance.post(
       `/foodTrucks/coupon/create`,
@@ -183,7 +202,7 @@ export const CreateCoupon = async (body: {
 
 export const GetVendorCoupons = async (userId: any) => {
   try {
-    const { data } = await axiosInstance.get(`foodTrucks/coupon/${userId}`);
+    const { data } = await axiosInstance.get(`foodTrucks/promoCodes/${userId}`);
     return data;
   } catch (error: any) {
     const message =

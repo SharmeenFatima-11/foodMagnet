@@ -6,6 +6,7 @@ import DateField from "../../textFields/calenderField";
 import CouponTable from "../../table/couponTable";
 import WhiteSquareButton from "../../button/whiteSquareButton";
 import {
+  GetCouponsAndTrials,
   CreateCoupon,
   GetVendorCoupons,
 } from "../../../lib/api/vendor/accountApis";
@@ -26,11 +27,7 @@ const ManualUpgradeCard: React.FC<VendorSidebarCardProps> = ({ id }) => {
   const [promoCodeError, setPromoCodeError] = useState("");
   const [couponType, setCouponType] = useState<string[]>([]);
   const [couponTypeError, setCouponTypeError] = useState("");
-  const [couponTypeDropdown, setCouponTypeDropDown] = useState([
-    "30 Days Trial",
-    "15 Days Trial",
-    "7 Days Trial",
-  ]);
+  const [couponTypeDropdown, setCouponTypeDropDown] = useState<any[]>([]);
   const [expiryDateNumber, setExpiryDateNumber] = useState<string | Date>("");
 
   const [expiryDateNumberError, setExpiryDateNumberError] = useState("");
@@ -85,6 +82,13 @@ const ManualUpgradeCard: React.FC<VendorSidebarCardProps> = ({ id }) => {
     }
 
     if (!valid) return;
+    // Find the matching coupon
+    console.log("couponTypeDropdown", couponTypeDropdown)
+    console.log("couponType[0]", couponType[0])
+    const matchedCoupon: any = couponTypeDropdown.find(
+      (item: any) => item.id === couponType[0]
+    );
+    console.log("coupon_type", matchedCoupon);
 
     // ✅ Add to coupons list
     const newCoupon: Coupon = {
@@ -97,8 +101,11 @@ const ManualUpgradeCard: React.FC<VendorSidebarCardProps> = ({ id }) => {
     CreateCoupon({
       userId: id,
       promo_code: promoCode,
-      coupon_type: couponType[0],
+      coupon_type: matchedCoupon.name,
       expiry_date: expiryDateNumber,
+      is_trial: matchedCoupon.is_trial,
+      is_coupon: matchedCoupon.is_coupon,
+      couponId: matchedCoupon.id,
     })
       .then((data) => {
         if (coupons.length == 0) {
@@ -142,11 +149,30 @@ const ManualUpgradeCard: React.FC<VendorSidebarCardProps> = ({ id }) => {
   };
 
   useEffect(() => {
+    GetCouponsAndTrials()
+      .then((data) => {
+        console.log("data", data);
+        setCouponTypeDropDown(Array.isArray(data) ? data : []);
+      })
+      .catch((error) => {
+        const errorMessage =
+          error.message || error.error || "Failed to get coupons and trials.";
+
+        Swal.fire({
+          title: "Error!",
+          text: errorMessage,
+          icon: "error",
+          confirmButtonText: "OK",
+          confirmButtonColor: "#8B4DC5", // purple confirm button
+        });
+      });
+  }, [id]);
+
+  useEffect(() => {
     GetVendorCoupons(id)
       .then((data) => {
         console.log("data", data);
         setCoupons(Array.isArray(data) ? data : []);
-
       })
       .catch((error) => {
         const errorMessage =
@@ -188,7 +214,7 @@ const ManualUpgradeCard: React.FC<VendorSidebarCardProps> = ({ id }) => {
           field={couponType}
           options={couponTypeDropdown}
           setField={handleCouponTypeChange}
-          placeholder="30 Days Trial"
+          placeholder=""
           error={couponTypeError}
           inputRef={couponTypeRef}
           onKeyDown={(e) => handleKeyDown(e, expiryDateRef)}
