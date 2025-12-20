@@ -106,6 +106,7 @@ const ManualUpgradeCard: React.FC<VendorSidebarCardProps> = ({ id }) => {
       is_trial: matchedCoupon.is_trial,
       is_coupon: matchedCoupon.is_coupon,
       couponId: matchedCoupon.id,
+      trial_days: matchedCoupon.trial_days
     })
       .then((data) => {
         if (coupons.length == 0) {

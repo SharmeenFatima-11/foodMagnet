@@ -181,6 +181,7 @@ export const CreateCoupon = async (body: {
   is_trial: boolean;
   is_coupon: boolean;
   couponId: string;
+  trial_days: number | null;
 }) => {
   console.log("body", body)
   try {
