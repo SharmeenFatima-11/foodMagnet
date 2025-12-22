@@ -110,12 +110,11 @@ export const ValidateResetPassword = async (body: {
 };
 
 export const Logout = async () => {
-  const router = useRouter();
   const credentials = localStorage.getItem("credentials");
 
   localStorage.clear();
   if (credentials) {
     localStorage.setItem("credentials", credentials);
   }
-  router.push("/login");
+  window.location.href = "/login";
 };
