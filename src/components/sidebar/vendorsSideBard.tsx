@@ -40,7 +40,7 @@ const VendorSideBar: React.FC<VendorSideBarProps> = ({ vendor }) => {
   const [vendorDetails, setVendorDetails] = useState<VendorDetails | null>(
     null
   );
-  const { verified } = useVendor();
+  const { verified , actionTriggered} = useVendor();
   const { vendorId, setActiveState } = useAdmin();
 
   useEffect(() => {
@@ -48,6 +48,7 @@ const VendorSideBar: React.FC<VendorSideBarProps> = ({ vendor }) => {
     if (vendorId) {
       id = vendorId;
     }
+    console.log("in use state", actionTriggered)
     if (id != null) {
       GetVendorDetails(id)
         .then((res) => {
@@ -63,7 +64,7 @@ const VendorSideBar: React.FC<VendorSideBarProps> = ({ vendor }) => {
           console.error("Error fetching vendor details:", error.message);
         });
     }
-  }, [vendor, verified, vendorId]);
+  }, [vendor, verified, vendorId, actionTriggered]);
 
   return (
     <motion.div

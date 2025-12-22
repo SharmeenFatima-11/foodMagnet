@@ -1,5 +1,4 @@
 import axiosInstance from "../axiosInstance";
-import {logout} from "../authApi"
 
 export const GetUsers = async () => {
   try {
@@ -80,7 +79,6 @@ export const DeleteUsers = async (userId: string) => {
         headers: { Authorization: `Bearer ${token}` },
       }
     );
-    
     return data;
   } catch (error: any) {
     const message =

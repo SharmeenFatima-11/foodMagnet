@@ -8,6 +8,7 @@ import {
   RevokeAccount,
   DenyRequest,
 } from "../../../lib/api/vendor/accountApis";
+import { useVendor } from "@/context/vendorContext";
 
 interface VendorSidebarCardProps {
   isPublished: boolean;
@@ -28,6 +29,7 @@ const VendorSidebarCard: React.FC<VendorSidebarCardProps> = ({
     "Menu Item Description",
     "Typos & Grammar",
   ]);
+  const { setActionTriggered } = useVendor();
 
   const handlePublishChange = (value: string[]) => {
     setPublishAccount(value);
@@ -83,6 +85,7 @@ const VendorSidebarCard: React.FC<VendorSidebarCardProps> = ({
             confirmButtonColor: "#8B4DC5", // custom purple button
           });
           setIsPublishedCalled(false);
+          setActionTriggered((prev) => !prev)
         })
         .catch((error) => {
           const errorMessage =
@@ -117,6 +120,7 @@ const VendorSidebarCard: React.FC<VendorSidebarCardProps> = ({
           onPublishSuccess(); // 👈 update parent when confirmed
         });
         setIsPublishedCalled(false);
+        setActionTriggered((prev) => !prev)
       })
       .catch((error) => {
         const errorMessage =
@@ -148,6 +152,7 @@ const VendorSidebarCard: React.FC<VendorSidebarCardProps> = ({
           onPublishSuccess(); // 👈 update parent when confirmed
         });
         setIsPublishedCalled(false);
+        setActionTriggered((prev) => !prev)
       })
       .catch((error) => {
         const errorMessage =
