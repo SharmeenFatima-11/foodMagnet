@@ -60,7 +60,10 @@ export const RefreshToken = async () => {
   }
 };
 
-export const ResetPassword = async (body: { email: string, isRegistrationEmail: boolean | null }) => {
+export const ResetPassword = async (body: {
+  email: string;
+  isRegistrationEmail: boolean | null;
+}) => {
   try {
     const { data } = await axiosInstance.post(
       "/admin/users/sendPasswordReset",
@@ -104,4 +107,15 @@ export const ValidateResetPassword = async (body: {
     console.log("Reset Password error:", message);
     throw new Error(message);
   }
+};
+
+export const Logout = async () => {
+  const router = useRouter();
+  const credentials = localStorage.getItem("credentials");
+
+  localStorage.clear();
+  if (credentials) {
+    localStorage.setItem("credentials", credentials);
+  }
+  router.push("/login");
 };

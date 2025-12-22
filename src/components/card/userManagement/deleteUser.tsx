@@ -5,6 +5,7 @@ import { X } from "lucide-react";
 import SquareButton from "../../button/squareButton";
 import CancelButton from "../../button/whiteSquareButton";
 import { DeleteUsers } from "../../../lib/api/userManagement/userApis";
+import { Logout } from "../../../lib/api/authApi";
 import Swal from "sweetalert2";
 
 interface DeleteUserCardProps {
@@ -55,6 +56,12 @@ const DeleteUserCard: React.FC<DeleteUserCardProps> = ({
         setModel(false);
         setAdded(false);
         setIsAdded((prev) => !prev);
+        let userId = localStorage.getItem("userData");
+        userId = userId ? JSON.parse(userId).userId : null;
+        console.log("userId..", userId, "user.id..", user.id )
+        if (userId && user.id == userId) {
+          Logout();
+        }
       })
       .catch((error) => {
         const errorMessage =
