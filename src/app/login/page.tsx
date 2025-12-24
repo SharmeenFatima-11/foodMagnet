@@ -28,6 +28,7 @@ const Page = () => {
   useEffect(() => {
     // Check if userData exists in localStorage
     const isLogin = searchParams.get("login");
+    console.log("isLogin", isLogin)
     if (isLogin) {
       localStorage.clear();
       router.push("/login");
