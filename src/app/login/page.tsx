@@ -11,7 +11,7 @@ import { Login } from "../../lib/api/authApi";
 const Page = () => {
   const router = useRouter();
 
-    const searchParams = useSearchParams();
+  const searchParams = useSearchParams();
   // const [email, setEmail] = useState<string>("adminuser@foodmagnet.app");
   const [email, setEmail] = useState<string>("");
   const [emailError, setEmailError] = useState<string>("");
@@ -28,29 +28,25 @@ const Page = () => {
   useEffect(() => {
     // Check if userData exists in localStorage
     const isLogin = searchParams.get("login");
-    if(isLogin){
-      localStorage.clear()
+    if (isLogin) {
+      localStorage.clear();
       router.push("/login");
-
-    }
-    const userDataString = localStorage.getItem("userData");
-    if (userDataString) {
-      router.push("/vendor");
     } else {
-      router.push("/login");
-    }
+      const userDataString = localStorage.getItem("userData");
+      if (userDataString) {
+        router.push("/vendor");
+      } else {
+        router.push("/login");
+      }
 
-    // Load saved credentials
-    const credentialsString = localStorage.getItem("credentials");
-    if (credentialsString) {
-      const credentials = JSON.parse(credentialsString); // parse string back to object
-      console.log("credentials", credentials);
-      console.log("type of credentialsString:", typeof credentialsString); // string
-      console.log("type of credentials:", typeof credentials); // object
-      console.log("credentials.email:", credentials.email); // real email
+      // Load saved credentials
+      const credentialsString = localStorage.getItem("credentials");
+      if (credentialsString) {
+        const credentials = JSON.parse(credentialsString);
 
-      setEmail(credentials.email || "");
-      setPassword(credentials.password || "");
+        setEmail(credentials.email || "");
+        setPassword(credentials.password || "");
+      }
     }
   }, [router]);
 
