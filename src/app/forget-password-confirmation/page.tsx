@@ -9,7 +9,7 @@ const Page = () => {
   const buttonRef = useRef<HTMLButtonElement | null>(null);
 
   const handleSubmit = (value: string) => {
-    router.push("/login");
+    router.push("/login/?login=true");
   };
 
   return (
