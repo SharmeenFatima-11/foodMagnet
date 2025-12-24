@@ -8,6 +8,7 @@ import {
   GetVerificationStatus,
 } from "../../../lib/api/vendor/documentApis";
 import { useVendor } from "../../../context/vendorContext";
+import { useViewOnly } from "@/context/ViewOnlyContext";
 
 interface Vendor {
   id: number;
@@ -15,6 +16,7 @@ interface Vendor {
 }
 
 const Page = () => {
+  const { isViewOnly } = useViewOnly();
   const { setVerified } = useVendor();
   const [vendor, setVendor] = useState<Vendor | null>(null);
   const [enabled, setEnabled] = useState(false);
@@ -80,7 +82,7 @@ const Page = () => {
           {/* Toggle Switch */}
           <button
             onClick={handleToggle}
-            disabled={isDisabled}
+            disabled={isDisabled || isViewOnly}
             className={`relative w-10 h-5 flex items-center rounded-full transition-colors duration-300 ${
               enabled ? "bg-[#8B4DC5]" : "bg-gray-300"
             }`}
