@@ -5,11 +5,13 @@ import TextField from "../../components/textFields/textField";
 import PasswordField from "../../components/textFields/passwordField";
 import Button from "../../components/button/button";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Login } from "../../lib/api/authApi";
 
 const Page = () => {
   const router = useRouter();
+
+    const searchParams = useSearchParams();
   // const [email, setEmail] = useState<string>("adminuser@foodmagnet.app");
   const [email, setEmail] = useState<string>("");
   const [emailError, setEmailError] = useState<string>("");
@@ -25,6 +27,12 @@ const Page = () => {
 
   useEffect(() => {
     // Check if userData exists in localStorage
+    const isLogin = searchParams.get("login");
+    if(isLogin){
+      localStorage.clear()
+      router.push("/login");
+
+    }
     const userDataString = localStorage.getItem("userData");
     if (userDataString) {
       router.push("/vendor");
