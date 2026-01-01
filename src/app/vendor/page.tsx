@@ -73,16 +73,28 @@ const Page = () => {
     });
   }, [search, data, filters]);
 
-  useEffect(() => {
-    GetVendors()
-      .then((res) => {
-        console.log("data fetched successfully:", res);
-        setData(res.foodTrucksData || []);
-      })
-      .catch((error) => {
-        console.error("error in fetching vendors:", error.message);
-      });
-  }, []);
+ useEffect(() => {
+  const fetchData = async () => {
+    try {
+      const res = await GetVendors();
+      console.log("Data fetched successfully:", res);
+      setData(res.foodTrucksData || []);
+    } catch (error: any) {
+      console.error("Error in fetching vendors, retrying once:", error.message);
+      // Retry once
+      try {
+        const resRetry = await GetVendors();
+        console.log("Retry successful:", resRetry);
+        setData(resRetry.foodTrucksData || []);
+      } catch (retryError: any) {
+        console.error("Retry failed:", retryError.message);
+      }
+    }
+  };
+
+  fetchData();
+}, []);
+
 
   return (
     <motion.div
