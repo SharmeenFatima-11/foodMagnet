@@ -38,7 +38,6 @@ const Filter: React.FC<FilterProps> = ({
   const toggleSection = (section: string) =>
     setOpenSection(openSection === section ? null : section);
 
-
   /** Count filters applied (live count while selecting) */
   const appliedCount = Object.values(tempFilters).filter(
     (v) => v !== ""
@@ -49,7 +48,6 @@ const Filter: React.FC<FilterProps> = ({
     field: keyof typeof tempFilters,
     options: string[]
   ) => {
-
     return (
       <div className="border-b border-gray-200 ">
         {/* Section Header */}
@@ -102,6 +100,11 @@ const Filter: React.FC<FilterProps> = ({
   const handleCancel = () => {
     // Reset only temporary filters (not main filters)
     setTempFilters({ subscription: "", permitStatus: "", city: "" });
+    setFilter({
+      subscription: "", // e.g. "Free", "Standard"
+      permitStatus: "", // e.g. "valid" | "expired"
+      city: "",
+    });
   };
 
   const handleApply = () => {

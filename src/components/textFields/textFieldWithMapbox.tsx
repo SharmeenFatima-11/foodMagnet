@@ -136,6 +136,7 @@ const TextFieldWithMapbox: React.FC<TextFieldWithMapboxProps> = ({
 
     if (city) {
       setCity?.([city]);
+      setCityOptions?.([city])
     }
 
     if (zip) {
