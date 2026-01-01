@@ -31,22 +31,8 @@ const Page = () => {
 
     return data.filter((item) => {
       // Compute status
-      const permitDate = new Date(item.permitExpiration);
-      const monthsUntilExpiry =
-        (permitDate.getFullYear() - today.getFullYear()) * 12 +
-        (permitDate.getMonth() - today.getMonth());
-
-      let status = "inactive";
-
-      if (item.activeStatus) {
-        if (permitDate < today) {
-          status = "expired";
-        } else if (monthsUntilExpiry <= 2) {
-          status = "expiring soon";
-        } else {
-          status = "active";
-        }
-      }
+      const status = item.permitStatus? "Active": "Inactive"
+    
 
       const matchesSearch =
         !query ||

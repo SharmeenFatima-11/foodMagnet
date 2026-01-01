@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { XMarkIcon, ChevronDownIcon } from "@heroicons/react/24/solid";
 import SquareButton from "../button/squareButton";
 import WhiteSquareButton from "../button/whiteSquareButton";
+import { Indent } from "lucide-react";
 
 interface FilterProps {
   showFilter: boolean;
@@ -37,12 +38,6 @@ const Filter: React.FC<FilterProps> = ({
   const toggleSection = (section: string) =>
     setOpenSection(openSection === section ? null : section);
 
-  /** Move selected option to top of list */
-  const reorderOptions = (options: string[], selected: string) => {
-    if (!selected) return options;
-    const reordered = options.filter((opt) => opt !== selected);
-    return [selected, ...reordered];
-  };
 
   /** Count filters applied (live count while selecting) */
   const appliedCount = Object.values(tempFilters).filter(
@@ -54,7 +49,6 @@ const Filter: React.FC<FilterProps> = ({
     field: keyof typeof tempFilters,
     options: string[]
   ) => {
-    const reorderedOptions = reorderOptions(options, tempFilters[field]);
 
     return (
       <div className="border-b border-gray-200 ">
@@ -80,9 +74,9 @@ const Filter: React.FC<FilterProps> = ({
               exit={{ height: 0, opacity: 0 }}
               className="overflow-hidden"
             >
-              {reorderedOptions.map((opt) => (
+              {options.map((opt, ind) => (
                 <div
-                  key={opt}
+                  key={ind}
                   onClick={() =>
                     setTempFilters({ ...tempFilters, [field]: opt })
                   }
@@ -144,9 +138,9 @@ const Filter: React.FC<FilterProps> = ({
 
         {renderDropdown("Permit Status", "permitStatus", [
           "Active",
-          "Expiring Soon",
-          "Expired",
-          "Inactive",
+          // "Expiring Soon",
+          // "Expired",
+          // "Inactive",
         ])}
 
         {renderDropdown("City", "city", [
