@@ -55,17 +55,17 @@ const AddVendorForm: React.FC<AddVendorFormProps> = ({
   const [buissnessAddress, setBuissnessAddress] = useState("");
   const [buissnessAddressError, setBuissnessAddressError] = useState("");
 
-  // const [city, setCity] = useState<string[]>([]);
-  const [city, setCity] = useState("");
+  const [city, setCity] = useState<string[]>([]);
+  // const [city, setCity] = useState("");
   const [cityError, setCityError] = useState("");
 
-  // const [cityOptions, setCityOptions] = useState([]);
+  const [cityOptions, setCityOptions] = useState([]);
 
-  // const [state, setState] = useState<string[]>([]);
-  const [state, setState] = useState("")
+  const [state, setState] = useState<string[]>([]);
+  const [stateIso, setStateIso] = useState("")
   const [stateError, setStateError] = useState("");
 
-  // const [stateOptions, setStateOptions] = useState([]);
+  const [stateOptions, setStateOptions] = useState([]);
     const [lng, setLng] = useState("");
     const [lat, setLat] = useState("");
   const [zip, setZip] = useState("");
@@ -181,29 +181,31 @@ const AddVendorForm: React.FC<AddVendorFormProps> = ({
     else setBuissnessAddressError("");
   };
 
-  // const handleCityChange = (value: string[]) => {
+  const handleCityChange = (value: string[]) => {
+    setCity(value);
+    // if (value.length === 0) setCityError("City is required");
+    // else setCityError("");
+  };
+
+  //  const handleCityChange = (value: string) => {
   //   setCity(value);
-  //   if (value.length === 0) setCityError("City is required");
+  //   if (!value.trim()) setCityError("City is required");
   //   else setCityError("");
   // };
 
-   const handleCityChange = (value: string) => {
-    setCity(value);
-    if (!value.trim()) setCityError("City is required");
-    else setCityError("");
+  const handleStateChange = (value: any) => {
+    setState(value);
+    console.log("value", value)
+    setStateIso(value[0])
+    // if (value.length === 0) setStateError("State is required");
+    // else setStateError("");
   };
 
-  // const handleStateChange = (value: string[]) => {
+  // const handleStateChange = (value: string) => {
   //   setState(value);
-  //   if (value.length === 0) setStateError("State is required");
+  //   if (!value.trim()) setStateError("City is required");
   //   else setStateError("");
   // };
-
-  const handleStateChange = (value: string) => {
-    setState(value);
-    if (!value.trim()) setStateError("City is required");
-    else setStateError("");
-  };
 
   const handleLngChange = (value: string) => {
     setLng(value);
@@ -261,10 +263,10 @@ const AddVendorForm: React.FC<AddVendorFormProps> = ({
     setBuissnessAddress("");
     setBuissnessAddressError("");
     // setCity([]);
-    setCity("");
+    // setCity("");
     setCityError("");
     // setState([]);
-    setState("");
+    // setState("");
     setStateError("");
     setZip("");
     setZipError("");
@@ -506,9 +508,13 @@ const AddVendorForm: React.FC<AddVendorFormProps> = ({
         <TextFieldWithMapbox
           text="Business Address"
           field={buissnessAddress}
+          stateIso={stateIso}
           setField={handleBuissnessAddressChange}
           setCity={handleCityChange}
           setState={handleStateChange}
+          setCityOptions={setCityOptions}
+          setStateIso={setStateIso}
+          setStateOptions={setStateOptions}
           handleLngChange={handleLngChange}
           handleLatChange={handleLatChange}
           setZip={handleZipChange}
@@ -518,31 +524,7 @@ const AddVendorForm: React.FC<AddVendorFormProps> = ({
           inputRef={businessAddressRef}
           onKeyDown={(e) => handleKeyDown(e, cityRef)}
         />
-
-        {/* <DropDownWithOneOption
-          text="City"
-          field={city}
-          options={cityOptions}
-          setField={handleCityChange}
-          placeholder="Select city"
-          error={cityError}
-          inputRef={cityRef}
-          onKeyDown={(e) => handleKeyDown(e, stateRef)}
-        /> */}
-
-        <TextField
-            text="City"
-            field={city}
-            setField={handleCityChange}
-            placeholder=""
-            type="text"
-            error={cityError}
-            inputRef={cityRef}
-            onKeyDown={(e) => handleKeyDown(e, stateRef)}
-          />
-
-        <div className="flex gap-x-3">
-          {/* <DropDownWithOneOption
+        <DropDownWithOneOption
             text="State"
             field={state}
             options={stateOptions}
@@ -551,9 +533,34 @@ const AddVendorForm: React.FC<AddVendorFormProps> = ({
             error={stateError}
             inputRef={stateRef}
             onKeyDown={(e) => handleKeyDown(e, zipRef)}
+          />
+
+        <div className="flex gap-x-3">
+
+        {/* <TextField
+            text="City"
+            field={city}
+            setField={handleCityChange}
+            placeholder=""
+            type="text"
+            error={cityError}
+            inputRef={cityRef}
+            onKeyDown={(e) => handleKeyDown(e, stateRef)}
           /> */}
 
-          <TextField
+
+          <DropDownWithOneOption
+          text="City"
+          field={city}
+          options={cityOptions}
+          setField={handleCityChange}
+          placeholder="Select city"
+          error={cityError}
+          inputRef={cityRef}
+          onKeyDown={(e) => handleKeyDown(e, stateRef)}
+        />
+
+          {/* <TextField
             text="State"
             field={state}
             setField={handleStateChange}
@@ -562,7 +569,7 @@ const AddVendorForm: React.FC<AddVendorFormProps> = ({
             error={cityError}
             inputRef={cityRef}
             onKeyDown={(e) => handleKeyDown(e, stateRef)}
-          />
+          /> */}
 
           <TextField
             text="Zip"

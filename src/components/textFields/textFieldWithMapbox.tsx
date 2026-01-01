@@ -1,12 +1,15 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
+import { State, City } from "country-state-city";
 
 interface TextFieldWithMapboxProps {
   text: string;
   field: string;
+  stateIso: string;
   setField: (value: string) => void;
-  setCity?: (value: string) => void;
-  setState?: (value: string) => void;
+  setStateIso: (value: string) => void;
+  setCity?: (value: string[]) => void;
+  setState?: (value: string[]) => void;
   handleLngChange?: (value: string) => void;
   handleLatChange?: (value: string) => void;
   setStateOptions?: any;
@@ -25,9 +28,13 @@ const MAPBOX_TOKEN =
 const TextFieldWithMapbox: React.FC<TextFieldWithMapboxProps> = ({
   text,
   field,
+  stateIso,
   setField,
+  setStateIso,
   setCity,
   handleLngChange,
+  setStateOptions,
+  setCityOptions,
   handleLatChange,
   setState,
   setZip,
@@ -38,6 +45,7 @@ const TextFieldWithMapbox: React.FC<TextFieldWithMapboxProps> = ({
   onKeyDown,
 }) => {
   const [suggestions, setSuggestions] = useState<any[]>([]);
+  const [countryCode, setCountryCode] = useState("");
   const [loading, setLoading] = useState(false);
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -47,6 +55,7 @@ const TextFieldWithMapbox: React.FC<TextFieldWithMapboxProps> = ({
       latitude: 0,
       longitude: 0,
     };
+    const country = context.country || {};
     console.log("context", place.properties);
 
     return {
@@ -59,6 +68,10 @@ const TextFieldWithMapbox: React.FC<TextFieldWithMapboxProps> = ({
       lng: coordinates.longitude,
 
       lat: coordinates.latitude,
+
+      regionCode: context.region?.region_code || "",
+
+      countryCode: country.country_code || "",
     };
   };
 
@@ -100,28 +113,46 @@ const TextFieldWithMapbox: React.FC<TextFieldWithMapboxProps> = ({
   const handleSelect = (place: any) => {
     setField(place.properties.full_address || place.place_name);
 
-    const { city, state, zip, lng, lat } = extractAddressParts(place);
+    const { city, state, regionCode, zip, lng, lat, countryCode } =
+      extractAddressParts(place);
+    setCountryCode(countryCode);
+    setStateIso(regionCode);
+    if (countryCode) {
+      // Get all states with name and isoCode
+      const allStates = State.getStatesOfCountry(countryCode).map((s) => ({
+        name: s.name,
+        id: s.isoCode, // include ISO code
+      }));
+
+      setStateOptions?.(allStates);
+    }
 
     handleLngChange?.(lng);
     handleLatChange?.(lat);
 
     if (state) {
-      setState?.(state);
+      setState?.([state]);
     }
 
     if (city) {
-      setCity?.(city);
+      setCity?.([city]);
     }
 
     if (zip) {
       setZip?.(zip);
-    } else {
-      setZip?.("");
     }
 
     setSuggestions([]);
   };
 
+  useEffect(() => {
+    if (stateIso && stateIso != "" && countryCode && countryCode != "") {
+      const cities = City.getCitiesOfState(countryCode, stateIso).map(
+        (c) => c.name
+      );
+      setCityOptions?.(cities);
+    }
+  }, [stateIso]);
   return (
     <div className="w-full flex flex-col relative">
       {/* Label */}
