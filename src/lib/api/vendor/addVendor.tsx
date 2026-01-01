@@ -69,6 +69,8 @@ export const AddVendor = async (body: {
   email: string;
   businessName: string;
   phoneNumber: string;
+  longitude: string;
+  latitude: string;
   businessDescription: string;
   foodCategoryId: string;
   movementType: string;

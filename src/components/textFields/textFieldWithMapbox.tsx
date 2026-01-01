@@ -5,6 +5,13 @@ interface TextFieldWithMapboxProps {
   text: string;
   field: string;
   setField: (value: string) => void;
+  setCity?: (value: string) => void;
+  setState?: (value: string) => void;
+  handleLngChange?: (value: string) => void;
+  handleLatChange?: (value: string) => void;
+  setStateOptions?: any;
+  setCityOptions?: any;
+  setZip?: (value: string) => void;
   placeholder?: string;
   type?: string;
   error?: string;
@@ -12,12 +19,18 @@ interface TextFieldWithMapboxProps {
   onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
 }
 
-const MAPBOX_TOKEN = 'pk.eyJ1IjoiZm9vZG1hZ2FwcCIsImEiOiJjbTE5dXBvNGMxa2xhMndxNHR1MHR3bjJzIn0.T4WaQMKD9pkjC-v0JZx3nw';
+const MAPBOX_TOKEN =
+  "pk.eyJ1IjoiZm9vZG1hZ2FwcCIsImEiOiJjbTE5dXBvNGMxa2xhMndxNHR1MHR3bjJzIn0.T4WaQMKD9pkjC-v0JZx3nw";
 
 const TextFieldWithMapbox: React.FC<TextFieldWithMapboxProps> = ({
   text,
   field,
   setField,
+  setCity,
+  handleLngChange,
+  handleLatChange,
+  setState,
+  setZip,
   placeholder = "",
   type = "text",
   error = "",
@@ -27,6 +40,27 @@ const TextFieldWithMapbox: React.FC<TextFieldWithMapboxProps> = ({
   const [suggestions, setSuggestions] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
+
+  const extractAddressParts = (place: any) => {
+    const context = place.properties?.context || {};
+    const coordinates = place.propperties?.coordinates || {
+      latitude: 0,
+      longitude: 0,
+    };
+    console.log("context", place.properties);
+
+    return {
+      city: context.place?.name || context.locality?.name || "",
+
+      state: context.region?.name || context.region?.region_code || "",
+
+      zip: context.postcode?.name || "",
+
+      lng: coordinates.longitude,
+
+      lat: coordinates.latitude,
+    };
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -65,6 +99,26 @@ const TextFieldWithMapbox: React.FC<TextFieldWithMapboxProps> = ({
 
   const handleSelect = (place: any) => {
     setField(place.properties.full_address || place.place_name);
+
+    const { city, state, zip, lng, lat } = extractAddressParts(place);
+
+    handleLngChange?.(lng);
+    handleLatChange?.(lat);
+
+    if (state) {
+      setState?.(state);
+    }
+
+    if (city) {
+      setCity?.(city);
+    }
+
+    if (zip) {
+      setZip?.(zip);
+    } else {
+      setZip?.("");
+    }
+
     setSuggestions([]);
   };
 
@@ -119,9 +173,7 @@ const TextFieldWithMapbox: React.FC<TextFieldWithMapboxProps> = ({
 
       {/* Error */}
       {error && (
-        <p className="text-red-500 text-sm mt-2 ml-1 animate-fadeIn">
-          {error}
-        </p>
+        <p className="text-red-500 text-sm mt-2 ml-1 animate-fadeIn">{error}</p>
       )}
     </div>
   );
