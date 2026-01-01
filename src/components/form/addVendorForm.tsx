@@ -292,8 +292,6 @@ const AddVendorForm: React.FC<AddVendorFormProps> = ({
       cuisine.length === 0 ||
       movementType.length === 0 ||
       !buissnessAddress ||
-      city.length === 0 ||
-      state.length === 0 ||
       !zip ||
       distanceTravel.length === 0 ||
       !subscriptionType
