@@ -59,7 +59,7 @@ const Page = () => {
     });
   }, [search, data, filters]);
 
- useEffect(() => {
+useEffect(() => {
   const fetchData = async () => {
     try {
       const res = await GetVendors();
@@ -67,19 +67,23 @@ const Page = () => {
       setData(res.foodTrucksData || []);
     } catch (error: any) {
       console.error("Error in fetching vendors, retrying once:", error.message);
-      // Retry once
+
       try {
         const resRetry = await GetVendors();
         console.log("Retry successful:", resRetry);
         setData(resRetry.foodTrucksData || []);
       } catch (retryError: any) {
         console.error("Retry failed:", retryError.message);
+
+        // 🔄 Refresh the page
+        window.location.reload();
       }
     }
   };
 
   fetchData();
 }, []);
+
 
 
   return (

@@ -224,7 +224,7 @@ const ManualUpgradeCard: React.FC<VendorSidebarCardProps> = ({ id }) => {
           text="Expiration Date"
           field={expiryDateNumber}
           setField={handleExpiryDateChange}
-          placeholder="11/12/25"
+          placeholder="11/12/26"
           type="date"
           error={expiryDateNumberError}
           inputRef={expiryDateRef}

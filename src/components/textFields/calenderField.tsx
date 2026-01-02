@@ -57,6 +57,7 @@ const TextField: React.FC<TextFieldProps> = ({
   const handleDateChange = (date: Date | null) => {
     if (date) {
       // const formatted = date.toISOString().split("T")[0];
+      console.log("date", date);
       setField(date);
 
       // Close calendar smoothly
@@ -156,7 +157,7 @@ const TextField: React.FC<TextFieldProps> = ({
               }}
               value={
                 field instanceof Date
-                  ? field.toISOString().split("T")[0]
+                  ? field.toLocaleDateString("en-CA") // YYYY-MM-DD
                   : field
               }
               readOnly
