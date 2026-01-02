@@ -9,7 +9,7 @@ interface TextFieldWithMapboxProps {
   setField: (value: string) => void;
   setStateIso: (value: string) => void;
   setCity?: (value: string[]) => void;
-  setState?: (value: string[]) => void;
+  setState?: any;
   handleLngChange?: (value: string) => void;
   handleLatChange?: (value: string) => void;
   setStateOptions?: any;
@@ -56,7 +56,6 @@ const TextFieldWithMapbox: React.FC<TextFieldWithMapboxProps> = ({
       longitude: 0,
     };
     const country = context.country || {};
-    console.log("context", place.properties);
 
     return {
       city: context.place?.name || context.locality?.name || "",
@@ -113,10 +112,12 @@ const TextFieldWithMapbox: React.FC<TextFieldWithMapboxProps> = ({
   const handleSelect = (place: any) => {
     setField(place.properties.full_address || place.place_name);
 
-    const { city, state, regionCode, zip, lng, lat, countryCode } =
+    const { city, state, zip, lng, lat, countryCode } =
       extractAddressParts(place);
     setCountryCode(countryCode);
-    setStateIso(regionCode);
+
+    handleLngChange?.(lng);
+    handleLatChange?.(lat);
     if (countryCode) {
       // Get all states with name and isoCode
       const allStates = State.getStatesOfCountry(countryCode).map((s) => ({
@@ -125,18 +126,31 @@ const TextFieldWithMapbox: React.FC<TextFieldWithMapboxProps> = ({
       }));
 
       setStateOptions?.(allStates);
+      if (state && allStates?.length) {
+        const normalizedState = state.toLowerCase().trim();
+
+        const matchedState = allStates.find((s) => {
+          const name = s.name.toLowerCase().trim();
+
+          return (
+            name.includes(normalizedState) || normalizedState.includes(name)
+          );
+        });
+
+        if (matchedState) {
+          setState?.([state]);
+          setStateIso?.(matchedState.id);
+        }
+      }
     }
 
-    handleLngChange?.(lng);
-    handleLatChange?.(lat);
-
-    if (state) {
-      setState?.([state]);
-    }
+    // if (state) {
+    //   setState?.([state]);
+    // }
 
     if (city) {
       setCity?.([city]);
-      setCityOptions?.([city])
+      setCityOptions?.([city]);
     }
 
     if (zip) {
@@ -153,7 +167,7 @@ const TextFieldWithMapbox: React.FC<TextFieldWithMapboxProps> = ({
       );
       setCityOptions?.(cities);
     }
-  }, [stateIso]);
+  }, [stateIso, countryCode]);
   return (
     <div className="w-full flex flex-col relative">
       {/* Label */}

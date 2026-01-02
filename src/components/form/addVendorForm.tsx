@@ -195,8 +195,8 @@ const AddVendorForm: React.FC<AddVendorFormProps> = ({
 
   const handleStateChange = (value: any) => {
     setState(value);
-    console.log("value", value)
     setStateIso(value[0])
+    setCity([])
     // if (value.length === 0) setStateError("State is required");
     // else setStateError("");
   };
@@ -363,7 +363,6 @@ const AddVendorForm: React.FC<AddVendorFormProps> = ({
   useEffect(() => {
     GetCuisines()
       .then((res) => {
-        console.log("Data fetched successfully:", res);
         setCuisineOptions(res.foodCategoryData ? res.foodCategoryData : []);
       })
       .catch((error) => {

@@ -83,12 +83,9 @@ const ManualUpgradeCard: React.FC<VendorSidebarCardProps> = ({ id }) => {
 
     if (!valid) return;
     // Find the matching coupon
-    console.log("couponTypeDropdown", couponTypeDropdown)
-    console.log("couponType[0]", couponType[0])
     const matchedCoupon: any = couponTypeDropdown.find(
       (item: any) => item.id === couponType[0]
     );
-    console.log("coupon_type", matchedCoupon);
 
     // ✅ Add to coupons list
     const newCoupon: Coupon = {
@@ -152,7 +149,6 @@ const ManualUpgradeCard: React.FC<VendorSidebarCardProps> = ({ id }) => {
   useEffect(() => {
     GetCouponsAndTrials()
       .then((data) => {
-        console.log("data", data);
         setCouponTypeDropDown(Array.isArray(data) ? data : []);
       })
       .catch((error) => {
@@ -172,7 +168,6 @@ const ManualUpgradeCard: React.FC<VendorSidebarCardProps> = ({ id }) => {
   useEffect(() => {
     GetVendorCoupons(id)
       .then((data) => {
-        console.log("data", data);
         setCoupons(Array.isArray(data) ? data : []);
       })
       .catch((error) => {
