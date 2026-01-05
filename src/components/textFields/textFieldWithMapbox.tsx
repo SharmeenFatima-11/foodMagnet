@@ -51,11 +51,12 @@ const TextFieldWithMapbox: React.FC<TextFieldWithMapboxProps> = ({
 
   const extractAddressParts = (place: any) => {
     const context = place.properties?.context || {};
-    const coordinates = place.propperties?.coordinates || {
+    const coordinates = place.properties?.coordinates || {
       latitude: 0,
       longitude: 0,
     };
     const country = context.country || {};
+    // console.log("place.properties?", place.properties)
 
     return {
       city: context.place?.name || context.locality?.name || "",
@@ -114,6 +115,7 @@ const TextFieldWithMapbox: React.FC<TextFieldWithMapboxProps> = ({
 
     const { city, state, zip, lng, lat, countryCode } =
       extractAddressParts(place);
+      console.log("city, state, zip, lng, lat, countryCode", city, state, zip, lng, lat, countryCode)
     setCountryCode(countryCode);
 
     handleLngChange?.(lng);
