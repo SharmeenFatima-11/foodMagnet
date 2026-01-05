@@ -6,7 +6,7 @@ import TextField from "../textFields/textField";
 import TextFieldWithMapbox from "../textFields/textFieldWithMapbox";
 import PhoneTextField from "../textFields/phoneNumber";
 import TextBox from "../textFields/textBox";
-import DropDownWithOneOption from "../dropdown/dropDownWithOneSelection";
+import DropDownWithOneOption from "../dropdown/dropDownWithoutBottomDiv";
 import RadioButtonGroup from "../radioButton/radioButton";
 import SquareButton from "../button/squareButton";
 import WhiteSquareButton from "../button/whiteSquareButton";

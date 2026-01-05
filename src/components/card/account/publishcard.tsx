@@ -176,8 +176,7 @@ const VendorSidebarCard: React.FC<VendorSidebarCardProps> = ({
           <div className="flex flex-col w-full sm:w-1/2 gap-y-2">
             <span className="font-bold text-[#343A40]">Published Account</span>
             <span className="text-sm break-words">
-              This profile is live and visible to customers. Vendors can now
-              access premium features and appear in search.
+              This profile is live and visible to customers. 
             </span>
           </div>
           <div className="w-full sm:w-auto flex justify-start sm:justify-end">
