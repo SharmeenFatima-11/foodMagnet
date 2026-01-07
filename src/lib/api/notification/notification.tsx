@@ -19,6 +19,25 @@ export const GetNotifications = async () => {
   }
 };
 
+export const GetUnReadNotifications = async () => {
+  try {
+    let token = localStorage.getItem("userData");
+    token = token ? JSON.parse(token).idToken : null;
+    const { data } = await axiosInstance.get("/admin/users/unread/notifications", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return data;
+  } catch (error: any) {
+    const message =
+      error.response?.data?.message ||
+      error.response?.data?.error?.message ||
+      error.message ||
+      error.error ||
+      "Failed to fetch notifications";
+    throw new Error(message);
+  }
+};
+
 export const MarkNotifications = async (body: {
   notificationIds: string[];
   markRead: boolean;

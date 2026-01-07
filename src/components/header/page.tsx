@@ -5,16 +5,19 @@ import { usePathname, useRouter } from "next/navigation";
 import { Bell } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import ShowNotification from "../form/notifications";
+
+import DesktopNotification from "../notification/triggerNotification";
+import { useAdmin } from "@/context/adminContext";
 // import { connectWebSocket, closeWebSocket } from "../../lib/socket/webSocket";
 
 const Header = () => {
   const router = useRouter();
   const pathname = usePathname();
+  const {notificationCount, setNotificationCount} = useAdmin();
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("John Doe");
   const [image, setImage] = useState("/logo.svg");
   const [showNotificationModal, setShowNotificationModal] = useState(false);
-  const [notificationsRecieved, setNotificationsRecieved] = useState(false);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -41,17 +44,6 @@ const Header = () => {
     }
   }, []);
 
-  // useEffect(() => {
-  //   setNotificationsRecieved;
-  //   const ws = connectWebSocket((data) => {
-  //     // Append new message to state
-  //     setNotificationsRecieved(true);
-  //   });
-
-  //   return () => {
-  //     closeWebSocket();
-  //   };
-  // }, []);
 
   // Compute title
   const title = useMemo(() => {
@@ -100,11 +92,11 @@ const Header = () => {
           className="relative cursor-pointer"
           onClick={() => {
             setShowNotificationModal(true);
-            setNotificationsRecieved(false);
+            setNotificationCount(0)
           }}
         >
           <Bell className="w-6 h-6 text-[#441372]" />
-          {notificationsRecieved && (
+          {notificationCount > 0 && (
             <motion.span
               layout
               className="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full"
@@ -190,6 +182,7 @@ const Header = () => {
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.15, duration: 0.3 }}
                 >
+                  
                   <button
                     className="flex items-center justify-start gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-all duration-200"
                     onClick={() => {
@@ -240,6 +233,7 @@ const Header = () => {
           </>
         )}
       </AnimatePresence>
+      <DesktopNotification />
     </motion.header>
   );
 };
