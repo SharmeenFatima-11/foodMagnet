@@ -4,7 +4,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { XMarkIcon, ChevronDownIcon } from "@heroicons/react/24/solid";
 import SquareButton from "../button/squareButton";
 import WhiteSquareButton from "../button/whiteSquareButton";
-import { Indent } from "lucide-react";
+import {
+  GetCities,
+} from "../../lib/api/vendor/addVendor";
 
 interface FilterProps {
   showFilter: boolean;
@@ -25,6 +27,18 @@ const Filter: React.FC<FilterProps> = ({
 }) => {
   const [openSection, setOpenSection] = useState<string | null>(null);
   const [tempFilters, setTempFilters] = useState(filters);
+  const [cities, setCities] = useState<string[]>([]);
+
+   useEffect(() => {
+    GetCities()
+      .then((res) => {
+        console.log("Data fetched successfully:", res);
+        setCities(res.cityData ? res.cityData : []);
+      })
+      .catch((error) => {
+        console.error("Error fetching states:", error.message);
+      });
+  }, []);
 
   // Sync tempFilters with filters when the sidebar opens
   useEffect(() => {
@@ -146,13 +160,7 @@ const Filter: React.FC<FilterProps> = ({
           // "Inactive",
         ])}
 
-        {renderDropdown("City", "city", [
-          "Conroe",
-          "Dallas",
-          "The Woodlands",
-          "Lafayette",
-          "Test",
-        ])}
+        {renderDropdown("City", "city", cities)}
       </div>
 
       {/* Fixed Buttons at Bottom */}

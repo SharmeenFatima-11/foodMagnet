@@ -13,10 +13,10 @@ import WhiteSquareButton from "../button/whiteSquareButton";
 import Swal from "sweetalert2";
 import {
   GetCuisines,
-  GetStates,
-  GetCities,
   AddVendor,
 } from "../../lib/api/vendor/addVendor";
+import { parsePhoneNumberFromString } from "libphonenumber-js";
+
 
 interface AddVendorFormProps {
   showModel: boolean;
@@ -49,7 +49,7 @@ const AddVendorForm: React.FC<AddVendorFormProps> = ({
 
   const [movementTypeOptions, setMovementTypeOptions] = useState([
     "Events Only",
-    "Travelling",
+    "Traveling",
     "Stationary Location",
   ]);
   const [buissnessAddress, setBuissnessAddress] = useState("");
@@ -134,13 +134,29 @@ const AddVendorForm: React.FC<AddVendorFormProps> = ({
     else setEmailError("");
   };
 
-  const handlePhoneChange = (value: string) => {
-    setPhoneNumber(value);
-    if (!value.trim()) setPhoneError("Phone number is required");
-    else if (!/^\+?\d{10,15}$/.test(value))
-      setPhoneError("Enter a valid phone number with country code");
-    else setPhoneError("");
-  };
+  // const handlePhoneChange = (value: string) => {
+  //   setPhoneNumber(value);
+  //   if (!value.trim()) setPhoneError("Phone number is required");
+  //   else if (!/^\+?\d{10,15}$/.test(value))
+  //     setPhoneError("Enter a valid phone number with country code");
+  //   else setPhoneError("");
+  // };
+
+  const handlePhoneChange = (value: string, country: any) => {
+  setPhoneNumber(value);
+
+  const phone = parsePhoneNumberFromString(
+    `+${value}`,
+    country?.countryCode?.toUpperCase()
+  );
+
+  if (!phone || !phone.isValid()) {
+    setPhoneError("Enter a valid phone number");
+    return;
+  }
+
+  setPhoneError("");
+};
 
   const handleBuissnessNameChange = (value: string) => {
     setBuissnessName(value);
@@ -315,7 +331,7 @@ const AddVendorForm: React.FC<AddVendorFormProps> = ({
       movementType:
         movementType[0] == "Stationary Location"
           ? "public"
-          : movementType[0] == "Travelling"
+          : movementType[0] == "Traveling"
           ? "travel"
           : movementType[0] == "Events Only"
           ? "event"
@@ -368,29 +384,7 @@ const AddVendorForm: React.FC<AddVendorFormProps> = ({
       .catch((error) => {
         console.error("Error fetching cuisines:", error.message);
       });
-  }, []);
-
-  // useEffect(() => {
-  //   GetStates()
-  //     .then((res) => {
-  //       console.log("Data fetched successfully:", res);
-  //       setStateOptions(res.stateData ? res.stateData : []);
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error fetching states:", error.message);
-  //     });
-  // }, []);
-
-  // useEffect(() => {
-  //   GetCities()
-  //     .then((res) => {
-  //       console.log("Data fetched successfully:", res);
-  //       setCityOptions(res.cityData ? res.cityData : []);
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error fetching states:", error.message);
-  //     });
-  // }, []);
+  }, []); 
 
   return (
     <motion.div

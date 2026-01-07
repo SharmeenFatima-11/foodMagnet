@@ -17,6 +17,7 @@
     "country-telephone-data": "^0.6.3",
     "date-fns": "^4.1.0",
     "framer-motion": "^12.23.24",
+    "libphonenumber-js": "^1.12.33",
     "lucide-react": "^0.545.0",
     "next": "^16.0.7",
     "react": "19.1.0",
